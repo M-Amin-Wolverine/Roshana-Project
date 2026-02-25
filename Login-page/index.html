@@ -14,11 +14,13 @@
 <canvas id="particles-canvas"></canvas>
 
 <div class="container">
+  <!-- سمت چپ - فقط در دسکتاپ -->
   <div class="left">
     <div class="image-wrapper">
       <img src="https://upload.wikimedia.org/wikipedia/commons/f/f4/%D8%B5%D8%AD%D9%86_%D9%88%D8%B1%D9%88%D8%AF%DB%8C_%D8%AF%D8%A7%D9%86%D8%B4%DA%AF%D8%A7%D9%87_%D8%B5%D8%AF%D8%A7_%D9%88_%D8%B3%DB%8C%D9%85%D8%A7.png" alt="صحن ورودی دانشگاه صدا و سیما">
       <div class="glass-overlay"></div>
     </div>
+
     <div class="branding-content">
       <h2 class="branding-logo">دانشگاه صدا و سیما</h2>
       <div class="project-name">پروژه «نور امید»</div>
@@ -27,16 +29,17 @@
     </div>
   </div>
 
+  <!-- سمت راست - فرم ورود -->
   <div class="right">
     <div class="login-box">
-      <!-- نوار اطلاعات بالا: ساعت + تاریخ شمسی + IP -->
+      <!-- نوار بالا: ساعت + تاریخ + IP -->
       <div class="info-bar">
         <div id="datetime" class="datetime-display">در حال بارگذاری...</div>
         <div id="user-ip" class="ip-display">IP: در حال بارگذاری...</div>
       </div>
 
-      <!-- دکمه تغییر تم (روز/شب) -->
-      <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+      <!-- دکمه تغییر تم -->
+      <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم روز/شب">
         <span class="icon-sun">☀️</span>
         <span class="icon-moon">🌙</span>
       </button>
@@ -45,16 +48,27 @@
       <p>به روشنـا، پروژه نور امید، در دل جوانان انقلابی دانشگاه صدا و سیما خوش آمدید!</p>
       
       <div class="form-group">
-        <label>نام کاربری</label>
-        <input type="text" placeholder="لطفا نام کاربری خود را وارد نمایید">
+        <label for="username">نام کاربری</label>
+        <input type="text" id="username" placeholder="لطفا نام کاربری خود را وارد نمایید" required autofocus>
       </div>
-      <div class="form-group">
-        <label>رمز عبور</label>
-        <input type="password" placeholder="رمز عبور خود را وارد نمایید">
+
+      <div class="form-group password-group">
+        <label for="password">رمز عبور</label>
+        <input type="password" id="password" placeholder="رمز عبور خود را وارد نمایید" required>
+        <button type="button" class="toggle-password" aria-label="نمایش/مخفی کردن رمز">👁</button>
       </div>
-      <button class="login-btn">ورود</button>
+
+      <div class="options">
+        <label>
+          <input type="checkbox" id="remember"> مرا به خاطر بسپار
+        </label>
+        <a href="#" class="forgot-link">فراموشی رمز عبور؟</a>
+      </div>
+
+      <button class="login-btn">ورود به میدان</button>
+
       <div class="helper-text">
-        جهت بازیابی کلمه عبور با پشتیبانی تماس بگیرید
+        جهت بازیابی کلمه عبور یا مشکلات ورود با پشتیبانی تماس بگیرید
       </div>
 
       <!-- کارت‌های لوگو -->
