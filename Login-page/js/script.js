@@ -23,7 +23,7 @@
       animationDuration: 400
     },
     music: {
-      url: 'https://dl.musicdel.ir/Music/1400/05/naser_chashmazar_barane_eshghe.mp3',
+      url: 'naser_chashmazar_barane_eshghe.mp3',
       volume: 0.2,
       fadeDuration: 1000
     },
