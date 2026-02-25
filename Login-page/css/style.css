@@ -1,11 +1,10 @@
 /* =================== پروژه روشنــا - نسخه نهایی CSS =================== */
 /* Author: تیم توسعه روشنــا */
-/* Version: 3.0.0 */
-/* Last Update: 2026 */
-
+/* Version: 3.0.1 */
+/* Last Update: 2026-02 */
 /* =================== متغیرهای اصلی با پالت رنگی گسترده =================== */
 :root {
-  /* رنگ‌های اصلی - تم تاریک */
+  /* رنگ‌های اصلی - تم تاریک (پیش‌فرض) */
   --bg: #0a1118;
   --bg-gradient: radial-gradient(circle at 30% 30%, #1a2a35, #0a1118 70%);
   --text: #d0e8f0;
@@ -22,36 +21,36 @@
   --warning: #ffcc00;
   --error: #ff3b30;
   --info: #5ac8fa;
-  
-  /* افکت‌های شیشه‌ای */
+
+  /* افکت شیشه‌ای (glassmorphism) */
   --glass-bg: rgba(255, 255, 255, 0.08);
-  --glass-bg-dark: rgba(0, 0, 0, 0.3);
+  --glass-bg-dark: rgba(0, 0, 0, 0.30);
   --glass-border: rgba(0, 224, 255, 0.28);
   --glass-border-light: rgba(255, 255, 255, 0.15);
   --glass-inner: linear-gradient(135deg, rgba(0,224,255,0.12), rgba(255,255,255,0.06));
-  
+
   /* سایه‌ها */
   --shadow-soft: 0 8px 32px rgba(0,0,0,0.45);
-  --shadow-medium: 0 15px 40px rgba(0,0,0,0.5);
-  --shadow-hard: 0 25px 60px rgba(0,0,0,0.6);
+  --shadow-medium: 0 15px 40px rgba(0,0,0,0.50);
+  --shadow-hard: 0 25px 60px rgba(0,0,0,0.60);
   --shadow-glow: 0 0 40px var(--primary-glow);
   --shadow-glow-strong: 0 0 70px var(--primary-glow);
-  --shadow-inner: inset 0 2px 10px rgba(0,0,0,0.3);
-  
+  --shadow-inner: inset 0 2px 10px rgba(0,0,0,0.30);
+
   /* ترنزیشن‌ها */
-  --transition-fast: all 0.2s ease;
-  --transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-  --transition-slow: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-  --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  
+  --transition-fast: all 0.18s ease;
+  --transition: all 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  --transition-slow: all 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  --transition-bounce: all 0.48s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
   /* گردی گوشه‌ها */
   --radius-sm: 8px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
-  --radius-xl: 32px;
-  --radius-full: 999px;
-  
-  /* اندازه فونت */
+  --radius-md: 12px;   /* کمی نرم‌تر از قبل */
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  /* فونت و اندازه‌ها */
   --font-xs: 0.75rem;
   --font-sm: 0.875rem;
   --font-base: 1rem;
@@ -59,17 +58,15 @@
   --font-xl: 1.25rem;
   --font-2xl: 1.5rem;
   --font-3xl: 2rem;
-  --font-4xl: 2.5rem;
-  
+
   /* فاصله‌ها */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
   --spacing-xl: 2rem;
-  --spacing-2xl: 2.5rem;
-  
-  /* لایه‌بندی */
+
+  /* z-index لایه‌ها */
   --z-negative: -1;
   --z-elevate: 1;
   --z-dropdown: 10;
@@ -83,71 +80,114 @@ body[data-theme="light"] {
   --bg: #f0f7fc;
   --bg-gradient: radial-gradient(circle at 70% 30%, #e0f0ff, #f0f7fc 70%);
   --text: #0d1e28;
-  --text-muted: #4a6a7a;
+  --text-muted: #536b7a;
   --text-light: #1a2a35;
-  --primary: #0077cc;
-  --primary-dark: #005599;
+  --primary: #0066b2;
+  --primary-dark: #004d88;
   --primary-darker: #003366;
-  --primary-glow: rgba(0, 119, 204, 0.4);
-  --primary-soft: rgba(0, 119, 204, 0.15);
-  
-  --glass-bg: rgba(255, 255, 255, 0.75);
-  --glass-bg-dark: rgba(0, 0, 0, 0.05);
-  --glass-border: rgba(0, 119, 204, 0.35);
-  --glass-border-light: rgba(0, 0, 0, 0.1);
-  --glass-inner: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,247,252,0.7));
-  
-  --shadow-soft: 0 8px 32px rgba(0,0,0,0.12);
-  --shadow-medium: 0 15px 40px rgba(0,0,0,0.15);
-  --shadow-hard: 0 25px 60px rgba(0,0,0,0.18);
-  --shadow-glow: 0 0 30px var(--primary-glow);
-  --shadow-inner: inset 0 2px 10px rgba(255,255,255,0.8);
+  --primary-glow: rgba(0, 102, 178, 0.35);
+  --primary-soft: rgba(0, 102, 178, 0.12);
+
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-bg-dark: rgba(0, 0, 0, 0.04);
+  --glass-border: rgba(0, 102, 178, 0.30);
+  --glass-border-light: rgba(0, 0, 0, 0.08);
+  --glass-inner: linear-gradient(135deg, rgba(255,255,255,0.92), rgba(240,247,252,0.78));
+
+  --shadow-soft: 0 8px 32px rgba(0,0,0,0.10);
+  --shadow-medium: 0 15px 40px rgba(0,0,0,0.12);
+  --shadow-hard: 0 25px 60px rgba(0,0,0,0.15);
+  --shadow-glow: 0 0 28px var(--primary-glow);
+  --shadow-inner: inset 0 2px 10px rgba(255,255,255,0.75);
 }
 
-/* =================== تنظیمات پایه =================== */
-* {
+/* =================== پایه و تنظیمات کلی =================== */
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Vazirmatn', 'Tajawal', sans-serif;
 }
 
 html {
-  font-size: 16px;
+  font-size: 100%;   /* بهتر از ثابت 16px */
+  scroll-behavior: smooth;
 }
 
 body {
+  font-family: 'Vazirmatn', 'Tajawal', system-ui, -apple-system, sans-serif;
   background: var(--bg);
   background-image: var(--bg-gradient);
   color: var(--text);
-  min-height: 100vh;
+  min-height: 100dvh;
+  line-height: 1.6;
   overflow: hidden;
-  position: relative;
-  transition: var(--transition);
-  line-height: 1.5;
+  transition: background-color var(--transition), color var(--transition);
 }
 
-/* =================== ذرات نور =================== */
-#particles-canvas {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: var(--z-negative);
-  opacity: 0.75;
-}
+/* ... بقیه کد شما تقریباً بدون تغییر ... */
 
-/* =================== اسکرول بار =================== */
+/* چند اصلاح کوچک پیشنهادی: */
+
+/* اسکرول‌بار زیباتر و سازگارتر */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
+  height: 5px;
 }
-
 ::-webkit-scrollbar-track {
   background: var(--glass-bg-dark);
 }
-
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(var(--primary), var(--primary-dark));
-  border-radius: var(--radius-full);
+  background: var(--primary);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
+}
+
+/* بهبود دکمه ورود */
+.login-btn {
+  width: 100%;
+  padding: 1.1rem;
+  border: none;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #000;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 6px 24px var(--primary-glow);
+}
+
+.login-btn:hover,
+.login-btn:focus-visible {
+  transform: translateY(-3px) scale(1.015);
+  box-shadow: 0 12px 36px var(--primary-glow);
+  outline: none;
+}
+
+.login-btn:active {
+  transform: translateY(-1px);
+}
+
+/* بهبود input ها در حالت فوکوس */
+.form-group input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 18%, transparent);
+  background: color-mix(in srgb, var(--glass-bg) 95%, var(--primary-soft));
+}
+
+/* پشتیبانی بهتر از prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
 }
 
 /* =================== کانتینر اصلی =================== */
