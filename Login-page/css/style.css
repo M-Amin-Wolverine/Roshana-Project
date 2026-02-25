@@ -1,120 +1,358 @@
+/* ================================================
+   متغیرها (Variables) - برای تم dark و light
+   ================================================ */
 :root {
-  --bg-dark: #0d1b20;
-  --bg-light: #f0f4f8;
-  --text-dark: #e0f7fa;
-  --text-light: #1a2f35;
-  --primary: #4ecdc4;
-  --primary-dark: #3aa8a0;
-  --neon-glow: rgba(78, 205, 196, 0.35);
-  --glass-bg: rgba(255, 255, 255, 0.08);
-  --glass-border: rgba(78, 205, 196, 0.25);
+  --bg-dark: #0b171d;
+  --bg-light: #f5f9fc;
+  --text-dark: #d1e8ee;
+  --text-light: #0f1e24;
+  --primary: #00d4ff;
+  --primary-dark: #0099cc;
+  --accent: #ff2d55;
+  --glow: rgba(0, 212, 255, 0.4);
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(0, 212, 255, 0.18);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
+/* تم روشن */
+[data-theme="light"] {
+  --bg-dark: var(--bg-light);
+  --text-dark: var(--text-light);
+  --glass-bg: rgba(0, 0, 0, 0.04);
+  --glass-border: rgba(0, 0, 0, 0.12);
+}
+
+/* ================================================
+   پایه و ریست کلی
+   ================================================ */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Vazirmatn', 'Tajawal', sans-serif;
 }
 
 body {
+  font-family: 'Vazirmatn', 'Tajawal', sans-serif;
   background: var(--bg-dark);
   color: var(--text-dark);
   min-height: 100vh;
   overflow: hidden;
   position: relative;
-  transition: background 0.5s ease, color 0.5s ease;
+  transition: var(--transition);
 }
 
-body[data-theme="light"] {
-  background: var(--bg-light);
-  color: var(--text-light);
-}
-
-body[data-theme="light"] .right,
-body[data-theme="light"] .login-box,
-body[data-theme="light"] .form-group input,
-body[data-theme="light"] .helper-text,
-body[data-theme="light"] .info-bar div {
-  background: rgba(255,255,255,0.7);
-  color: #1a2f35;
-}
-
-body[data-theme="light"] .branding-logo,
-body[data-theme="light"] .project-name,
-body[data-theme="light"] .slogan {
-  color: #1a2f35;
-  text-shadow: none;
-}
-
-/* Particles canvas */
+/* ================================================
+   ذرات پس‌زمینه (Particles Canvas)
+   ================================================ */
 #particles-canvas {
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
+  inset: 0;
   pointer-events: none;
   z-index: -2;
-  opacity: 0.6;
+  opacity: 0.55;
+  filter: blur(1px);
 }
 
-/* نوار اطلاعات بالا */
+/* ================================================
+   ساختار اصلی (Container)
+   ================================================ */
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+/* سمت چپ - تصویر دانشگاه + برندینگ */
+.left {
+  flex: 1.15;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to right, rgba(11, 23, 29, 0.92), transparent 75%);
+  overflow: hidden;
+}
+
+.image-wrapper {
+  width: 88%;
+  height: 88%;
+  border-radius: 48px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: var(--shadow);
+}
+
+.image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.78;
+  transition: opacity 0.8s ease;
+}
+
+.image-wrapper:hover img {
+  opacity: 1;
+}
+
+.glass-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+  border-radius: 48px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.branding-content {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 2;
+  max-width: 90%;
+}
+
+.branding-logo {
+  font-family: 'Tajawal', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 900;
+  background: linear-gradient(90deg, var(--primary), #ffffff, var(--primary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 40px var(--glow);
+  letter-spacing: 1px;
+}
+
+.project-name {
+  font-size: 1.9rem;
+  color: var(--primary);
+  margin-bottom: 1rem;
+  text-shadow: 0 0 20px var(--glow);
+}
+
+.slogan {
+  font-size: 1.25rem;
+  line-height: 1.7;
+  opacity: 0.92;
+  text-shadow: 0 0 15px rgba(0,0,0,0.7);
+}
+
+/* سمت راست - فرم ورود */
+.right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem;
+  background: rgba(15, 25, 30, 0.94);
+  backdrop-filter: blur(12px);
+}
+
+.login-box {
+  width: 100%;
+  max-width: 440px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-bottom: 2rem;
+}
+
+/* نوار اطلاعات بالا (ساعت + IP) */
 .info-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  font-size: 0.9rem;
-  opacity: 0.85;
+  margin-bottom: 1.8rem;
+  font-size: 0.95rem;
+  opacity: 0.88;
 }
 
 .datetime-display,
 .ip-display {
-  background: rgba(255,255,255,0.1);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  backdrop-filter: blur(5px);
+  background: rgba(255,255,255,0.08);
+  padding: 0.6rem 1.2rem;
+  border-radius: 30px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0,212,255,0.15);
 }
 
-/* دکمه تم */
+/* دکمه تغییر تم */
 .theme-toggle {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: rgba(255,255,255,0.15);
+  top: 1.2rem;
+  right: 1.2rem;
+  background: rgba(255,255,255,0.12);
   border: none;
   border-radius: 50%;
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   cursor: pointer;
-  font-size: 1.8rem;
+  font-size: 1.9rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s;
-  backdrop-filter: blur(10px);
+  transition: var(--transition);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
 .theme-toggle:hover {
+  transform: scale(1.12) rotate(15deg);
+  box-shadow: 0 0 30px var(--glow);
+}
+
+/* فرم */
+.login-box h1 {
+  font-family: 'Tajawal', sans-serif;
+  font-size: 2.4rem;
+  margin-bottom: 0.8rem;
+  background: linear-gradient(90deg, #fff, var(--primary), #fff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 30px var(--glow);
+}
+
+.login-box p {
+  font-size: 1.05rem;
+  margin-bottom: 2.5rem;
+  opacity: 0.9;
+}
+
+.form-group {
+  margin-bottom: 1.8rem;
+  position: relative;
+}
+
+.form-group label {
+  position: absolute;
+  right: 1.4rem;
+  top: -0.8rem;
+  background: transparent;
+  padding: 0 0.6rem;
+  font-size: 0.95rem;
+  color: var(--primary);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 1.3rem 1.5rem;
+  border-radius: 14px;
+  border: 1px solid rgba(0,212,255,0.3);
+  background: rgba(255,255,255,0.07);
+  color: white;
+  font-size: 1.05rem;
+  transition: var(--transition);
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 5px rgba(0,212,255,0.22);
+  background: rgba(255,255,255,0.12);
+}
+
+.login-btn {
+  width: 100%;
+  padding: 1.4rem;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+  color: #000;
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 10px 30px var(--glow);
+  animation: pulse-btn 4s infinite ease-in-out;
+}
+
+@keyframes pulse-btn {
+  0%, 100% { transform: scale(1); box-shadow: 0 10px 30px var(--glow); }
+  50%      { transform: scale(1.03); box-shadow: 0 15px 45px rgba(0,212,255,0.6); }
+}
+
+.login-btn:hover {
+  transform: translateY(-4px) scale(1.04);
+  box-shadow: 0 20px 60px rgba(0,212,255,0.7);
+}
+
+.helper-text {
+  margin-top: 1.2rem;
+  font-size: 0.9rem;
+  color: #b0bec5;
+  text-align: center;
+  opacity: 0.8;
+}
+
+/* کارت‌های لوگو پایین */
+.logos-footer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 1.2rem;
+  margin-top: auto;
+  padding-top: 2rem;
+}
+
+.logo-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 1.2rem;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  transition: var(--transition);
+}
+
+.logo-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(0,212,255,0.4);
+  border-color: var(--primary);
+}
+
+.logo-card img {
+  width: 80px;
+  height: auto;
+  margin-bottom: 0.8rem;
+  filter: drop-shadow(0 0 12px var(--glow));
+  transition: transform 0.5s;
+}
+
+.logo-card:hover img {
   transform: scale(1.1);
-  box-shadow: 0 0 20px var(--neon-glow);
 }
 
-.theme-toggle .icon-sun,
-.theme-toggle .icon-moon {
-  transition: opacity 0.4s;
+.logo-card span {
+  font-size: 0.78rem;
+  display: block;
+  opacity: 0.82;
 }
 
-body[data-theme="light"] .theme-toggle .icon-sun { opacity: 0; }
-body[data-theme="light"] .theme-toggle .icon-moon { opacity: 1; }
-body[data-theme="dark"] .theme-toggle .icon-sun { opacity: 1; }
-body[data-theme="dark"] .theme-toggle .icon-moon { opacity: 0; }
-
-/* ... بقیه استایل‌ها مثل container, left, right, form-group, login-btn, logos-footer بدون تغییر ... */
-
-/* Responsive */
-@media (max-width: 992px) {
+/* ================================================
+   Responsive Design
+   ================================================ */
+@media (max-width: 1024px) {
   .left { display: none; }
-  .right { padding: 1.5rem 1rem; height: 100vh; align-items: flex-start; padding-top: 80px; }
-  .info-bar { flex-direction: column; gap: 0.8rem; }
-  .theme-toggle { top: 0.8rem; right: 0.8rem; }
+  .right { padding: 1.8rem 1.2rem; height: 100vh; align-items: flex-start; padding-top: 90px; }
+  .info-bar { flex-direction: column; gap: 0.8rem; margin-bottom: 1.2rem; }
+  .theme-toggle { top: 1rem; right: 1rem; }
+}
+
+@media (max-width: 480px) {
+  .login-box h1 { font-size: 2rem; }
+  .login-box p { font-size: 0.95rem; }
+  .login-btn { font-size: 1.1rem; padding: 1.2rem; }
+  .logos-footer { gap: 1rem; }
+  .logo-card { padding: 1rem; }
+  .logo-card img { width: 65px; }
+  .logo-card span { font-size: 0.72rem; }
 }
