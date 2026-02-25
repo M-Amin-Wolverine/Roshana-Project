@@ -87,6 +87,9 @@ body[data-theme="light"] {
   position: relative;
   background: linear-gradient(to right, rgba(11, 23, 29, 0.94), transparent 75%);
   overflow: hidden;
+  display: flex;
+  align-items: center; /* وسط‌چین عمودی */
+  justify-content: center;
 }
 
 .image-wrapper {
@@ -97,7 +100,7 @@ body[data-theme="light"] {
   position: relative;
   box-shadow: var(--shadow);
   transition: var(--transition);
-  margin: 6% auto;
+  margin: 0 auto; /* حذف margin قبلی */
 }
 
 .image-wrapper img {
@@ -124,21 +127,39 @@ body[data-theme="light"] {
   z-index: 1;
 }
 
-/* Branding content */
+/* Branding content - تنظیم موقعیت به وسط */
 .branding-content {
   position: absolute;
-  bottom: 50px;
+  top: 50%; /* وسط عمودی */
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%); /* دقیقاً وسط */
   text-align: center;
   z-index: 2;
   max-width: 90%;
   animation: float 6s ease-in-out infinite;
+  width: 100%;
+  padding: 0 20px;
+}
+
+/* گزینه‌های مختلف برای موقعیت‌های متفاوت */
+.branding-content.top-third {
+  top: 33%; /* یک‌سوم بالا */
+  transform: translate(-50%, -33%);
+}
+
+.branding-content.bottom-third {
+  top: 66%; /* یک‌سوم پایین */
+  transform: translate(-50%, -66%);
+}
+
+.branding-content.upper-middle {
+  top: 45%; /* کمی بالاتر از وسط */
+  transform: translate(-50%, -45%);
 }
 
 @keyframes float {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(-10px); }
+  0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+  50% { transform: translate(-50%, -50%) translateY(-10px); }
 }
 
 .branding-logo {
@@ -195,12 +216,17 @@ body[data-theme="light"] {
   border-radius: 10px;
 }
 
+/* =================== اصلاح کارت لاگین (غیرفعال کردن حرکت با موس) =================== */
 .login-box {
   width: 100%;
   max-width: 440px;
   text-align: center;
   position: relative;
   animation: fadeInUp 1s ease-out;
+  /* غیرفعال کردن کامل transform و transition برای جلوگیری از حرکت */
+  transform: none !important;
+  transition: none !important;
+  will-change: unset;
 }
 
 @keyframes fadeInUp {
@@ -512,7 +538,7 @@ body[data-theme="light"] {
   box-shadow: 0 20px 60px rgba(0,212,255,0.8);
 }
 
-/* Helper text & footer logos */
+/* =================== Helper text & footer logos - اصلاح شده =================== */
 .helper-text { 
   margin-top: 1.2rem; 
   font-size: 0.9rem; 
@@ -521,12 +547,20 @@ body[data-theme="light"] {
   opacity: 0.8; 
 }
 
+/* تنظیم ۴ لوگو کنار هم */
 .logos-footer {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  grid-template-columns: repeat(4, 1fr); /* ۴ ستون مساوی */
   gap: 1.2rem;
   margin-top: auto;
   padding-top: 2.5rem;
+  width: 100%;
+  direction: ltr; /* برای جلوگیری از بهم ریختن ترتیب */
+}
+
+/* برای نمایش درست در راست‌چین */
+[dir="rtl"] .logos-footer {
+  direction: ltr;
 }
 
 .logo-card {
@@ -540,6 +574,27 @@ body[data-theme="light"] {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  width: 100%;
+  min-width: 0; /* جلوگیری از سرریز */
+  animation: fadeInScale 0.5s ease-out;
+  animation-fill-mode: both;
+}
+
+/* انیمیشن جداگانه برای هر لوگو */
+.logo-card:nth-child(1) { animation-delay: 0.1s; }
+.logo-card:nth-child(2) { animation-delay: 0.2s; }
+.logo-card:nth-child(3) { animation-delay: 0.3s; }
+.logo-card:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .logo-card::before {
@@ -563,13 +618,13 @@ body[data-theme="light"] {
 }
 
 .logo-card:hover {
-  transform: translateY(-10px) scale(1.05);
-  box-shadow: 0 20px 50px rgba(0,212,255,0.45);
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 15px 30px rgba(0,212,255,0.35);
   border-color: var(--primary);
 }
 
 .logo-card img {
-  width: 80px;
+  width: 70px; /* کمی کوچکتر برای تناسب بهتر */
   height: auto;
   margin-bottom: 0.8rem;
   filter: drop-shadow(0 0 12px var(--glow));
@@ -577,13 +632,16 @@ body[data-theme="light"] {
 }
 
 .logo-card:hover img { 
-  transform: scale(1.12) rotate(5deg); 
+  transform: scale(1.1) rotate(3deg); 
 }
 
 .logo-card span { 
-  font-size: 0.78rem; 
+  font-size: 0.8rem; 
   display: block; 
-  opacity: 0.82; 
+  opacity: 0.82;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Notifications */
@@ -678,6 +736,25 @@ body[data-theme="light"] {
 }
 
 /* Responsive */
+@media (max-width: 1200px) {
+  .logos-footer {
+    grid-template-columns: repeat(4, 1fr); /* همچنان ۴ تا در دسکتاپ کوچیک */
+    gap: 1rem;
+  }
+  
+  .logo-card {
+    padding: 1rem;
+  }
+  
+  .logo-card img {
+    width: 60px;
+  }
+  
+  .logo-card span {
+    font-size: 0.75rem;
+  }
+}
+
 @media (max-width: 1024px) {
   .left { display: none; }
   .right { 
@@ -708,6 +785,9 @@ body[data-theme="light"] {
     height: 40px;
     font-size: 20px;
   }
+  .logos-footer {
+    grid-template-columns: repeat(2, 1fr); /* توی تبلت میشه ۲ تا */
+  }
 }
 
 @media (max-width: 768px) {
@@ -718,7 +798,16 @@ body[data-theme="light"] {
     max-width: 100%;
   }
   .logos-footer {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr); /* توی موبایل هم ۲ تا */
+    gap: 0.8rem;
+  }
+  
+  .logo-card {
+    padding: 0.8rem;
+  }
+  
+  .logo-card img {
+    width: 50px;
   }
 }
 
@@ -735,16 +824,16 @@ body[data-theme="light"] {
     padding: 1.2rem; 
   }
   .logos-footer { 
-    gap: 1rem; 
+    gap: 0.6rem; 
   }
   .logo-card { 
-    padding: 1rem; 
+    padding: 0.7rem; 
   }
   .logo-card img { 
-    width: 65px; 
+    width: 45px; 
   }
   .logo-card span { 
-    font-size: 0.72rem; 
+    font-size: 0.7rem; 
   }
   .form-group input {
     padding: 1.1rem 1.3rem;
