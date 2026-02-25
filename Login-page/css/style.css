@@ -1,130 +1,257 @@
+/* =================== متغیرهای اصلی با پالت رنگی گسترده =================== */
 :root {
   --bg: #0a1118;
+  --bg-gradient: radial-gradient(circle at 30% 30%, #1a2a35, #0a1118 70%);
   --text: #d0e8f0;
   --text-muted: #a0c0d0;
+  --text-light: #ffffff;
   --primary: #00e0ff;
   --primary-dark: #00a0cc;
+  --primary-darker: #007799;
   --primary-glow: rgba(0, 224, 255, 0.55);
+  --primary-soft: rgba(0, 224, 255, 0.25);
   --accent: #ff2d88;
+  --accent-glow: rgba(255, 45, 136, 0.5);
+  --success: #4cd964;
+  --warning: #ffcc00;
+  --error: #ff3b30;
+  --info: #5ac8fa;
+  
   --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-bg-dark: rgba(0, 0, 0, 0.3);
   --glass-border: rgba(0, 224, 255, 0.28);
+  --glass-border-light: rgba(255, 255, 255, 0.15);
   --glass-inner: linear-gradient(135deg, rgba(0,224,255,0.12), rgba(255,255,255,0.06));
+  
   --shadow-soft: 0 8px 32px rgba(0,0,0,0.45);
+  --shadow-medium: 0 15px 40px rgba(0,0,0,0.5);
+  --shadow-hard: 0 25px 60px rgba(0,0,0,0.6);
   --shadow-glow: 0 0 40px var(--primary-glow);
+  --shadow-glow-strong: 0 0 70px var(--primary-glow);
+  --shadow-inner: inset 0 2px 10px rgba(0,0,0,0.3);
+  
+  --transition-fast: all 0.2s ease;
   --transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-  --radius: 20px;
+  --transition-slow: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 30px;
+  --radius-xl: 40px;
+  --radius-full: 999px;
+  
+  --font-xs: 0.75rem;
+  --font-sm: 0.875rem;
+  --font-base: 1rem;
+  --font-lg: 1.125rem;
+  --font-xl: 1.25rem;
+  --font-2xl: 1.5rem;
+  --font-3xl: 2rem;
+  --font-4xl: 2.5rem;
+  --font-5xl: 3rem;
+  
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  --spacing-3xl: 4rem;
+  
+  --z-negative: -1;
+  --z-elevate: 1;
+  --z-dropdown: 10;
+  --z-sticky: 100;
+  --z-modal: 1000;
+  --z-popover: 1000;
+  --z-toast: 2000;
 }
 
+/* =================== تم روشن با جزئیات کامل =================== */
 body[data-theme="light"] {
   --bg: #f0f7fc;
+  --bg-gradient: radial-gradient(circle at 70% 30%, #e0f0ff, #f0f7fc 70%);
   --text: #0d1e28;
   --text-muted: #4a6a7a;
+  --text-light: #1a2a35;
   --primary: #0077cc;
   --primary-dark: #005599;
+  --primary-darker: #003366;
   --primary-glow: rgba(0, 119, 204, 0.4);
-  --glass-bg: rgba(255, 255, 255, 0.65);
+  --primary-soft: rgba(0, 119, 204, 0.15);
+  
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-bg-dark: rgba(0, 0, 0, 0.05);
   --glass-border: rgba(0, 119, 204, 0.35);
-  --glass-inner: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(240,247,252,0.6));
-  --shadow-soft: 0 12px 40px rgba(0,0,0,0.18);
+  --glass-border-light: rgba(0, 0, 0, 0.1);
+  --glass-inner: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,247,252,0.7));
+  
+  --shadow-soft: 0 8px 32px rgba(0,0,0,0.12);
+  --shadow-medium: 0 15px 40px rgba(0,0,0,0.15);
+  --shadow-hard: 0 25px 60px rgba(0,0,0,0.18);
+  --shadow-glow: 0 0 30px var(--primary-glow);
+  --shadow-inner: inset 0 2px 10px rgba(255,255,255,0.8);
 }
 
+/* =================== تنظیمات پایه =================== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Vazirmatn', 'Tajawal', system-ui, sans-serif;
+  font-family: 'Vazirmatn', 'Tajawal', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--bg);
+  background-image: var(--bg-gradient);
   color: var(--text);
   min-height: 100vh;
   overflow: hidden;
   position: relative;
   transition: var(--transition);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* =================== ذرات نور پیشرفته =================== */
 #particles-canvas {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: -1;
-  opacity: 0.7;
-  filter: blur(0.8px);
+  z-index: var(--z-negative);
+  opacity: 0.75;
+  filter: blur(1px) brightness(1.1);
+  transition: opacity var(--transition);
 }
 
-/* Scrollbar خفن */
+/* =================== اسکرول بار سفارشی =================== */
 ::-webkit-scrollbar {
-  width: 7px;
+  width: 8px;
+  height: 8px;
 }
+
 ::-webkit-scrollbar-track {
-  background: var(--glass-bg);
-  border-radius: 10px;
+  background: var(--glass-bg-dark);
+  border-radius: var(--radius-full);
   backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border-light);
 }
+
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(var(--primary), var(--primary-dark));
-  border-radius: 10px;
-  box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  border-radius: var(--radius-full);
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.3), 0 0 10px var(--primary-glow);
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
+  box-shadow: 0 0 20px var(--primary-glow);
 }
 
-/* Layout اصلی */
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* =================== لایه‌بندی اصلی =================== */
 .container {
   display: flex;
   height: 100vh;
   overflow: hidden;
+  position: relative;
 }
 
-/* سمت چپ - برندینگ (دسکتاپ) */
+/* =================== سمت چپ - بخش برندینگ =================== */
 .left {
   flex: 1.2;
   position: relative;
-  background: linear-gradient(to right, rgba(10,17,24,0.96), transparent 70%);
+  background: linear-gradient(135deg, rgba(10,17,24,0.98), rgba(10,17,24,0.85) 60%, transparent 90%);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  isolation: isolate;
 }
 
+.left::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 50%, var(--primary-soft) 0%, transparent 60%);
+  opacity: 0.3;
+  z-index: 0;
+  animation: pulse-glow 8s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+}
+
+/* =================== کانتینر تصویر =================== */
 .image-wrapper {
   width: 86%;
   height: 86%;
-  border-radius: 42px;
+  border-radius: var(--radius-xl);
   overflow: hidden;
   position: relative;
-  box-shadow: var(--shadow-soft), var(--shadow-glow);
-  transition: var(--transition);
+  box-shadow: var(--shadow-hard), var(--shadow-glow);
+  transition: var(--transition-slow);
+  transform: translateZ(0);
+  border: 1px solid var(--glass-border);
+}
+
+.image-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 50%, rgba(0,224,255,0.2) 100%);
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.image-wrapper:hover::after {
+  opacity: 1;
 }
 
 .image-wrapper img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.82;
-  transition: all 1.2s ease;
+  opacity: 0.85;
+  transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  filter: saturate(1.1) contrast(1.05);
 }
 
 .image-wrapper:hover img {
   opacity: 1;
-  transform: scale(1.06);
+  transform: scale(1.08) rotate(0.5deg);
+  filter: saturate(1.2) contrast(1.1);
 }
 
+/* =================== لایه شیشه‌ای روی تصویر =================== */
 .glass-overlay {
   position: absolute;
   inset: 0;
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: var(--glass-inner);
+  backdrop-filter: blur(12px) saturate(200%);
+  -webkit-backdrop-filter: blur(12px) saturate(200%);
   border: 1px solid var(--glass-border);
-  border-radius: 42px;
+  border-radius: var(--radius-xl);
   z-index: 1;
   pointer-events: none;
+  mix-blend-mode: overlay;
 }
 
-/* محتوای برندینگ */
+/* =================== محتوای برندینگ =================== */
 .branding-content {
   position: absolute;
   top: 50%;
@@ -134,79 +261,249 @@ body {
   z-index: 2;
   max-width: 92%;
   animation: float 7s ease-in-out infinite;
-  padding: 0 24px;
+  padding: 0 var(--spacing-xl);
+  width: 100%;
 }
 
+.branding-content.top-third {
+  top: 33%;
+  transform: translate(-50%, -33%);
+}
+
+.branding-content.bottom-third {
+  top: 66%;
+  transform: translate(-50%, -66%);
+}
+
+@keyframes float {
+  0%, 100% { 
+    transform: translate(-50%, -50%) translateY(0); 
+  }
+  50% { 
+    transform: translate(-50%, -50%) translateY(-15px); 
+  }
+}
+
+/* =================== لوگوی برندینگ =================== */
 .branding-logo {
-  font-size: 2.6rem;
+  font-size: var(--font-5xl);
   font-weight: 900;
-  background: linear-gradient(90deg, var(--primary), #ffffff, var(--primary));
+  background: linear-gradient(90deg, var(--primary), var(--text-light), var(--primary));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   text-shadow: 0 0 50px var(--primary-glow);
-  margin-bottom: 0.6rem;
+  margin-bottom: var(--spacing-sm);
+  letter-spacing: 2px;
   animation: neon-glow 4s ease-in-out infinite alternate;
-}
-
-.project-name {
-  font-size: 2.1rem;
-  color: var(--primary);
-  margin: 1rem 0;
-  text-shadow: 0 0 30px var(--primary-glow);
-}
-
-.slogan {
-  font-size: 1.3rem;
-  line-height: 1.8;
-  opacity: 0.94;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+  line-height: 1.2;
 }
 
 @keyframes neon-glow {
-  from { text-shadow: 0 0 20px var(--primary-glow); }
-  to   { text-shadow: 0 0 60px var(--primary-glow), 0 0 100px rgba(0,224,255,0.3); }
+  from { 
+    text-shadow: 0 0 30px var(--primary-glow), 0 0 60px rgba(0,224,255,0.3);
+  }
+  to { 
+    text-shadow: 0 0 60px var(--primary-glow), 0 0 100px rgba(0,224,255,0.5), 0 0 150px rgba(255,255,255,0.3);
+  }
 }
 
-@keyframes float {
-  0%, 100% { transform: translate(-50%, -50%) translateY(0); }
-  50%      { transform: translate(-50%, -50%) translateY(-12px); }
+/* =================== نام پروژه =================== */
+.project-name {
+  font-size: var(--font-4xl);
+  color: var(--primary);
+  margin: var(--spacing-md) 0;
+  text-shadow: 0 0 30px var(--primary-glow);
+  font-weight: 700;
+  position: relative;
+  display: inline-block;
 }
 
-/* پنل ورود سمت راست */
+.project-name::before,
+.project-name::after {
+  content: '✦';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--primary);
+  opacity: 0.6;
+  font-size: var(--font-2xl);
+}
+
+.project-name::before {
+  left: -30px;
+}
+
+.project-name::after {
+  right: -30px;
+}
+
+/* =================== شعار =================== */
+.slogan {
+  font-size: var(--font-lg);
+  line-height: 1.8;
+  opacity: 0.94;
+  text-shadow: 0 2px 15px rgba(0,0,0,0.7);
+  margin-bottom: var(--spacing-sm);
+  font-weight: 400;
+}
+
+.slogan:last-of-type {
+  font-size: var(--font-xl);
+  font-weight: 500;
+  color: var(--primary);
+  opacity: 1;
+  margin-top: var(--spacing-md);
+}
+
+/* =================== پنل ورود سمت راست =================== */
 .right {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2.5rem 3rem;
+  padding: var(--spacing-2xl) var(--spacing-3xl);
   background: rgba(15, 25, 35, 0.92);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   position: relative;
   overflow-y: auto;
+  border-left: 1px solid var(--glass-border);
 }
 
+.right::-webkit-scrollbar {
+  width: 5px;
+}
+
+.right::-webkit-scrollbar-thumb {
+  background: linear-gradient(var(--primary), var(--primary-dark));
+}
+
+/* =================== کادر ورود =================== */
 .login-box {
   width: 100%;
-  max-width: 460px;
+  max-width: 480px;
   text-align: center;
-  animation: fadeIn 1.2s ease-out;
+  animation: fadeInUp 1.2s ease-out;
+  position: relative;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(40px); }
-  to   { opacity: 1; transform: translateY(0); }
+@keyframes fadeInUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(40px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
 }
 
-/* دکمه تغییر تم - چپ بالا */
+/* =================== نوار اطلاعات (ساعت و IP) =================== */
+.info-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-2xl);
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.datetime-display,
+.ip-display {
+  background: var(--glass-bg);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-full);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  font-size: var(--font-sm);
+  box-shadow: var(--shadow-soft);
+  flex: 1;
+  min-width: 140px;
+}
+
+.datetime-display::before,
+.ip-display::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+  transform: rotate(30deg);
+  animation: shine 4s infinite;
+  pointer-events: none;
+}
+
+@keyframes shine {
+  from { transform: translateX(-100%) rotate(30deg); }
+  to { transform: translateX(100%) rotate(30deg); }
+}
+
+.datetime-display:hover,
+.ip-display:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 25px var(--primary-glow);
+  transform: translateY(-2px);
+}
+
+/* =================== شمارش معکوس نوروز =================== */
+#nowruz-countdown {
+  font-size: var(--font-xs);
+  margin-top: var(--spacing-xs);
+  color: var(--primary);
+  animation: pulse 2s infinite;
+  font-weight: 500;
+  background: var(--glass-bg);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  display: inline-block;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+/* =================== نمایش آب و هوا =================== */
+#weather {
+  margin-top: var(--spacing-md);
+  font-size: var(--font-sm);
+  opacity: 0.9;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-full);
+  background: var(--glass-bg);
+  backdrop-filter: blur(5px);
+  animation: fadeIn 1s ease;
+  border: 1px solid var(--glass-border-light);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+#weather img {
+  width: 30px;
+  height: 30px;
+  filter: drop-shadow(0 0 8px var(--primary-glow));
+}
+
+/* =================== دکمه تغییر تم =================== */
 .theme-toggle {
   position: absolute;
   top: 1.4rem;
   left: 1.4rem;
   width: 56px;
   height: 56px;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   backdrop-filter: blur(12px);
@@ -215,30 +512,83 @@ body {
   justify-content: center;
   cursor: pointer;
   font-size: 1.9rem;
-  transition: var(--transition);
+  transition: var(--transition-bounce);
   box-shadow: var(--shadow-soft);
-  z-index: 100;
+  z-index: var(--z-sticky);
+  overflow: hidden;
 }
 
 .theme-toggle:hover {
-  transform: scale(1.15) rotate(10deg);
-  box-shadow: var(--shadow-glow);
+  transform: scale(1.15) rotate(15deg);
+  box-shadow: var(--shadow-glow-strong);
+  border-color: var(--primary);
 }
 
 .theme-toggle .icon-sun,
 .theme-toggle .icon-moon {
   position: absolute;
   transition: all 0.5s ease;
+  text-shadow: 0 0 15px currentColor;
 }
 
-body[data-theme="light"] .icon-sun  { opacity: 0; transform: scale(0); }
-body[data-theme="light"] .icon-moon { opacity: 1; transform: scale(1); }
-body:not([data-theme="light"]) .icon-sun  { opacity: 1; transform: scale(1); }
-body:not([data-theme="light"]) .icon-moon { opacity: 0; transform: scale(0); }
+body[data-theme="light"] .icon-sun  { 
+  opacity: 0; 
+  transform: scale(0) rotate(-180deg); 
+}
+body[data-theme="light"] .icon-moon { 
+  opacity: 1; 
+  transform: scale(1) rotate(0); 
+}
+body:not([data-theme="light"]) .icon-sun  { 
+  opacity: 1; 
+  transform: scale(1) rotate(0); 
+}
+body:not([data-theme="light"]) .icon-moon { 
+  opacity: 0; 
+  transform: scale(0) rotate(180deg); 
+}
 
-/* فرم */
+/* =================== افکت موج روی دکمه =================== */
+.ripple {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: scale(0);
+  animation: rippleEffect 0.7s linear;
+  pointer-events: none;
+}
+
+@keyframes rippleEffect {
+  0% { transform: scale(0); opacity: 0.8; }
+  100% { transform: scale(4); opacity: 0; }
+}
+
+/* =================== عنوان فرم =================== */
+.login-box h1 {
+  font-size: var(--font-4xl);
+  margin-bottom: var(--spacing-sm);
+  background: linear-gradient(135deg, var(--text-light), var(--primary), var(--text-light));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 30px var(--primary-glow);
+  font-weight: 900;
+  line-height: 1.3;
+}
+
+.login-box p {
+  font-size: var(--font-base);
+  margin-bottom: var(--spacing-2xl);
+  opacity: 0.9;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+/* =================== گروه‌های فرم =================== */
 .form-group {
-  margin-bottom: 2.4rem;
+  margin-bottom: var(--spacing-2xl);
   position: relative;
 }
 
@@ -248,39 +598,60 @@ body:not([data-theme="light"]) .icon-moon { opacity: 0; transform: scale(0); }
   top: -0.7rem;
   background: var(--bg);
   padding: 0 0.8rem;
-  font-size: 0.92rem;
+  font-size: var(--font-xs);
   color: var(--primary);
   pointer-events: none;
   z-index: 2;
-  border-radius: 12px;
+  border-radius: var(--radius-full);
   transition: var(--transition);
+  font-weight: 500;
+  border: 1px solid var(--glass-border-light);
+  backdrop-filter: blur(5px);
 }
 
 .form-group input {
   width: 100%;
   padding: 1.45rem 1.6rem;
-  border-radius: var(--radius);
+  border-radius: var(--radius-md);
   border: 1px solid var(--glass-border);
   background: var(--glass-bg);
   backdrop-filter: blur(10px);
   color: var(--text);
-  font-size: 1.08rem;
+  font-size: var(--font-base);
   transition: var(--transition);
+  box-shadow: var(--shadow-inner);
+}
+
+.form-group input:hover {
+  border-color: var(--primary-soft);
 }
 
 .form-group input:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 5px rgba(0,224,255,0.22), inset 0 0 12px rgba(0,224,255,0.15);
-  background: rgba(255,255,255,0.12);
+  box-shadow: 0 0 0 5px rgba(0,224,255,0.22), inset 0 0 15px rgba(0,224,255,0.2);
+  background: rgba(255,255,255,0.15);
+  transform: translateY(-2px);
 }
 
 .form-group input:focus + label {
   color: var(--primary);
-  transform: translateY(-6px) scale(0.94);
+  transform: translateY(-8px) scale(0.9);
+  background: var(--bg);
+  border-color: var(--primary);
 }
 
-/* چشم رمز */
+.form-group input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.5;
+  font-size: var(--font-sm);
+}
+
+/* =================== گروه رمز عبور =================== */
+.password-group {
+  position: relative;
+}
+
 .toggle-password {
   position: absolute;
   left: 1.5rem;
@@ -293,38 +664,120 @@ body:not([data-theme="light"]) .icon-moon { opacity: 0; transform: scale(0); }
   cursor: pointer;
   transition: var(--transition);
   z-index: 3;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: var(--glass-bg-dark);
 }
 
 .toggle-password:hover {
-  color: white;
-  transform: translateY(-50%) scale(1.25);
+  color: var(--text-light);
+  transform: translateY(-50%) scale(1.15);
+  background: var(--primary-soft);
+  box-shadow: 0 0 20px var(--primary-glow);
 }
 
-[dir="rtl"] .toggle-password {
-  left: auto;
-  right: 1.5rem;
+/* =================== گزینه‌های فرم =================== */
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: var(--spacing-lg) 0 var(--spacing-xl);
+  font-size: var(--font-sm);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
 }
 
-/* دکمه ورود */
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: var(--transition);
+}
+
+.remember-me:hover {
+  color: var(--text);
+}
+
+.remember-me input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--primary);
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+.forgot-link {
+  color: var(--primary);
+  text-decoration: none;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  padding: var(--spacing-xs) 0;
+  font-weight: 500;
+}
+
+.forgot-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary), transparent);
+  transition: width 0.3s ease;
+}
+
+.forgot-link:hover {
+  color: var(--text-light);
+  text-shadow: 0 0 10px var(--primary-glow);
+}
+
+.forgot-link:hover::after {
+  width: 100%;
+}
+
+/* =================== دکمه ورود =================== */
 .login-btn {
   width: 100%;
   padding: 1.45rem;
   border: none;
-  border-radius: var(--radius);
-  background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark), var(--primary));
+  background-size: 200% 200%;
   color: #000;
-  font-size: 1.28rem;
+  font-size: var(--font-xl);
   font-weight: 800;
   cursor: pointer;
-  transition: var(--transition);
-  box-shadow: 0 12px 40px var(--primary-glow);
+  transition: var(--transition-bounce);
+  box-shadow: 0 15px 40px var(--primary-glow);
   position: relative;
   overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 1px solid rgba(255,255,255,0.2);
+  animation: gradient-shift 4s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 .login-btn:hover {
-  transform: translateY(-6px);
+  transform: translateY(-6px) scale(1.02);
   box-shadow: 0 25px 70px rgba(0,224,255,0.7);
+  animation: none;
+}
+
+.login-btn:active {
+  transform: translateY(-2px) scale(0.98);
 }
 
 .login-btn::before {
@@ -334,122 +787,576 @@ body:not([data-theme="light"]) .icon-moon { opacity: 0; transform: scale(0); }
   left: 50%;
   width: 0;
   height: 0;
-  background: rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.3);
   border-radius: 50%;
   transform: translate(-50%, -50%);
   transition: width 0.7s, height 0.7s;
 }
 
 .login-btn:hover::before {
-  width: 400px;
-  height: 400px;
+  width: 500px;
+  height: 500px;
 }
 
-/* فوتر لوگوها */
+/* =================== متن کمکی =================== */
+.helper-text {
+  margin-top: var(--spacing-lg);
+  font-size: var(--font-xs);
+  color: var(--text-muted);
+  text-align: center;
+  opacity: 0.8;
+  line-height: 1.6;
+  padding: 0 var(--spacing-md);
+}
+
+/* =================== فوتر لوگوها =================== */
 .logos-footer {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1.3rem;
-  margin-top: 3rem;
-  padding-top: 2.5rem;
+  margin-top: var(--spacing-2xl);
+  padding-top: var(--spacing-xl);
   direction: ltr;
+  border-top: 1px solid var(--glass-border-light);
 }
 
 .logo-card {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
-  border-radius: 18px;
+  border-radius: var(--radius-md);
   padding: 1.3rem;
   text-align: center;
   backdrop-filter: blur(12px);
-  transition: var(--transition);
+  transition: var(--transition-bounce);
   box-shadow: var(--shadow-soft);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  animation: fadeInScale 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+.logo-card:nth-child(1) { animation-delay: 0.1s; }
+.logo-card:nth-child(2) { animation-delay: 0.2s; }
+.logo-card:nth-child(3) { animation-delay: 0.3s; }
+.logo-card:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.logo-card::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+.logo-card:hover::before {
+  width: 200px;
+  height: 200px;
+  opacity: 0.4;
 }
 
 .logo-card:hover {
   transform: translateY(-8px) scale(1.06);
-  box-shadow: var(--shadow-glow);
+  box-shadow: var(--shadow-glow-strong);
   border-color: var(--primary);
 }
 
 .logo-card img {
-  width: 68px;
+  width: 70px;
   height: auto;
   margin-bottom: 0.9rem;
-  filter: drop-shadow(0 0 14px var(--primary-glow));
+  filter: drop-shadow(0 0 15px var(--primary-glow));
   transition: transform 0.5s ease;
 }
 
 .logo-card:hover img {
   transform: scale(1.15) rotate(6deg);
+  filter: drop-shadow(0 0 25px var(--primary-glow));
 }
 
 .logo-card span {
-  font-size: 0.82rem;
+  font-size: var(--font-xs);
   opacity: 0.85;
   display: block;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* نوتیفیکیشن */
+/* =================== نوتیفیکیشن =================== */
 .notification {
   position: fixed;
   bottom: 32px;
   right: 32px;
   padding: 16px 36px;
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   color: white;
-  z-index: 2000;
-  box-shadow: 0 6px 30px rgba(0,0,0,0.4);
+  z-index: var(--z-toast);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
   animation: slideIn 0.45s ease-out forwards;
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(15px);
   border: 1px solid rgba(255,255,255,0.25);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 280px;
+}
+
+.notification.success { 
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.95), rgba(56, 142, 60, 0.95));
+  border-left: 5px solid #2e7d32;
+}
+.notification.error { 
+  background: linear-gradient(135deg, rgba(244, 67, 54, 0.95), rgba(211, 47, 47, 0.95));
+  border-left: 5px solid #b71c1c;
+}
+.notification.info { 
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.95), rgba(25, 118, 210, 0.95));
+  border-left: 5px solid #0d47a1;
+}
+.notification.warning { 
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.95), rgba(255, 160, 0, 0.95));
+  border-left: 5px solid #ff6f00;
 }
 
 @keyframes slideIn {
-  from { transform: translateX(120%); opacity: 0; }
-  to   { transform: translateX(0); opacity: 1; }
+  from { 
+    transform: translateX(120%) translateY(20px); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translateX(0) translateY(0); 
+    opacity: 1; 
+  }
 }
 
-/* موسیقی toggle */
+@keyframes slideOut {
+  from { 
+    transform: translateX(0) translateY(0); 
+    opacity: 1; 
+  }
+  to { 
+    transform: translateX(120%) translateY(20px); 
+    opacity: 0; 
+  }
+}
+
+/* =================== دکمه موسیقی =================== */
 #music-toggle {
   position: fixed;
   bottom: 24px;
   left: 24px;
   width: 58px;
   height: 58px;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: white;
   font-size: 26px;
   cursor: pointer;
-  z-index: 1000;
+  z-index: var(--z-sticky);
   box-shadow: 0 6px 24px rgba(0,0,0,0.4);
   border: none;
-  transition: var(--transition);
+  transition: var(--transition-bounce);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: musicPulse 2.5s infinite;
+}
+
+@keyframes musicPulse {
+  0%, 100% { 
+    transform: scale(1); 
+    box-shadow: 0 6px 24px rgba(0,0,0,0.4); 
+  }
+  50% { 
+    transform: scale(1.1); 
+    box-shadow: 0 0 40px var(--primary-glow); 
+  }
 }
 
 #music-toggle:hover {
   transform: scale(1.18) rotate(360deg);
-  box-shadow: var(--shadow-glow);
+  box-shadow: var(--shadow-glow-strong);
+  animation: none;
 }
 
-/* Responsive */
+/* =================== انیمیشن لودینگ =================== */
+.loading {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255,255,255,.3);
+  border-radius: 50%;
+  border-top-color: var(--primary);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* =================== مدیا کوئری‌های واکنش‌گرا =================== */
+@media (max-width: 1200px) {
+  :root {
+    font-size: 15px;
+  }
+  
+  .login-box {
+    max-width: 440px;
+  }
+  
+  .logos-footer {
+    gap: 1rem;
+  }
+  
+  .logo-card {
+    padding: 1.1rem;
+  }
+  
+  .logo-card img {
+    width: 60px;
+  }
+}
+
 @media (max-width: 1024px) {
-  .left { display: none; }
-  .right { padding: 2rem 1.5rem; align-items: flex-start; padding-top: 100px; }
-  .logos-footer { grid-template-columns: repeat(2, 1fr); }
+  .left {
+    display: none;
+  }
+  
+  .right {
+    padding: var(--spacing-xl) var(--spacing-lg);
+    align-items: flex-start;
+    padding-top: 100px;
+    border-left: none;
+  }
+  
+  .info-bar {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    width: 100%;
+  }
+  
+  .datetime-display,
+  .ip-display {
+    width: 100%;
+    text-align: center;
+    min-width: auto;
+  }
+  
+  .logos-footer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .theme-toggle {
+    top: 1rem;
+    left: 1rem;
+    width: 50px;
+    height: 50px;
+    font-size: 1.7rem;
+  }
+  
+  #music-toggle {
+    bottom: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    font-size: 14px;
+  }
+  
+  .right {
+    padding: var(--spacing-lg) var(--spacing-md);
+    padding-top: 90px;
+  }
+  
+  .login-box {
+    max-width: 100%;
+  }
+  
+  .login-box h1 {
+    font-size: var(--font-3xl);
+  }
+  
+  .logos-footer {
+    gap: 0.8rem;
+  }
+  
+  .logo-card {
+    padding: 0.9rem;
+  }
+  
+  .logo-card img {
+    width: 50px;
+  }
+  
+  .options {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+  
+  .notification {
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    min-width: auto;
+    text-align: center;
+    justify-content: center;
+  }
 }
 
 @media (max-width: 480px) {
-  .login-box h1 { font-size: 2.1rem; }
-  .login-btn { padding: 1.3rem; font-size: 1.15rem; }
-  .logos-footer { gap: 1rem; }
-  .theme-toggle { top: 1rem; left: 1rem; width: 48px; height: 48px; font-size: 1.7rem; }
-  #music-toggle { bottom: 16px; left: 16px; width: 50px; height: 50px; font-size: 22px; }
+  :root {
+    font-size: 13px;
+  }
+  
+  .right {
+    padding: var(--spacing-md) var(--spacing-sm);
+    padding-top: 80px;
+  }
+  
+  .login-box h1 {
+    font-size: var(--font-2xl);
+  }
+  
+  .login-btn {
+    padding: 1.2rem;
+    font-size: var(--font-lg);
+  }
+  
+  .form-group input {
+    padding: 1.2rem 1.3rem;
+  }
+  
+  .logos-footer {
+    gap: 0.6rem;
+  }
+  
+  .logo-card {
+    padding: 0.8rem;
+  }
+  
+  .logo-card img {
+    width: 45px;
+  }
+  
+  .theme-toggle {
+    width: 44px;
+    height: 44px;
+    font-size: 1.5rem;
+  }
+  
+  #music-toggle {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+    bottom: 16px;
+    left: 16px;
+  }
 }
 
-/* RTL تنظیمات نهایی */
-[dir="rtl"] .theme-toggle { left: auto; right: 1.4rem; }
-[dir="rtl"] #music-toggle { left: auto; right: 24px; }
-[dir="rtl"] .toggle-password { left: auto; right: 1.5rem; }
-[dir="rtl"] .form-group label { right: 1.6rem; left: auto; }
+/* =================== پشتیبانی از RTL =================== */
+[dir="rtl"] .theme-toggle {
+  left: auto;
+  right: 1.4rem;
+}
+
+[dir="rtl"] .info-bar {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] #music-toggle {
+  left: auto;
+  right: 24px;
+}
+
+[dir="rtl"] .toggle-password {
+  left: auto;
+  right: 1.5rem;
+}
+
+[dir="rtl"] .form-group label {
+  right: 1.6rem;
+  left: auto;
+}
+
+[dir="rtl"] .notification {
+  right: auto;
+  left: 32px;
+}
+
+[dir="rtl"] .forgot-link::after {
+  left: auto;
+  right: 0;
+}
+
+@media (max-width: 1024px) {
+  [dir="rtl"] .theme-toggle {
+    right: 1rem;
+  }
+  
+  [dir="rtl"] #music-toggle {
+    right: 20px;
+  }
+}
+
+/* =================== حالت چاپ =================== */
+@media print {
+  #particles-canvas,
+  .theme-toggle,
+  #music-toggle,
+  .notification,
+  .glass-overlay,
+  .info-bar,
+  .logos-footer {
+    display: none !important;
+  }
+  
+  body,
+  body[data-theme] {
+    background: white;
+    color: black;
+    overflow: visible;
+  }
+  
+  .right {
+    background: white;
+    backdrop-filter: none;
+    border: 1px solid #ddd;
+  }
+  
+  .login-box {
+    max-width: 100%;
+  }
+  
+  .form-group input {
+    border: 1px solid #ccc;
+    background: white;
+    color: black;
+  }
+  
+  .login-btn {
+    background: #333;
+    color: white;
+    box-shadow: none;
+  }
+}
+
+/* =================== حالت کنتراست بالا =================== */
+@media (prefers-contrast: high) {
+  :root {
+    --primary: #00a6ff;
+    --primary-glow: rgba(0, 166, 255, 0.9);
+    --glass-bg: rgba(0, 0, 0, 0.2);
+    --glass-border: rgba(0, 166, 255, 0.6);
+  }
+  
+  .login-btn {
+    border: 2px solid white;
+  }
+  
+  .form-group input {
+    border-width: 2px;
+  }
+  
+  .logo-card {
+    border-width: 2px;
+  }
+}
+
+/* =================== انیمیشن‌های اضافی =================== */
+@keyframes glow-pulse {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.2); }
+  100% { filter: brightness(1); }
+}
+
+.glow-effect {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.shake {
+  animation: shake 0.6s ease-in-out;
+}
+
+@keyframes rotate-scale {
+  from { transform: scale(0) rotate(0deg); }
+  to { transform: scale(1) rotate(360deg); }
+}
+
+.rotate-scale {
+  animation: rotate-scale 0.5s ease-out;
+}
+
+/* =================== کلاس‌های کاربردی =================== */
+.text-gradient {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+}
+
+.glass-card:hover {
+  box-shadow: var(--shadow-glow);
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: neon-glow 3s ease-in-out infinite alternate;
+}
+
+/* =================== پایان CSS =================== */
