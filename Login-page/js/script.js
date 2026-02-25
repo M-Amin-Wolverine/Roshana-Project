@@ -1,255 +1,1293 @@
-/* =================== پروژه روشنــا - نسخه نهایی بهبودیافته =================== */
+/* =================== پروژه روشنــا - نسخه نهایی فوق پیشرفته =================== */
+// Author: تیم توسعه روشنــا
+// Version: 2.0.0
+// Last Update: 2026
 
-// ۱. مدیریت تم (dark / light فقط - بدون auto برای سادگی)
-function setTheme(theme) {
-  document.body.setAttribute('data-theme', theme);
-  localStorage.setItem('theme', theme);
-  // بروزرسانی رنگ ذرات
-  particles.forEach(p => { p.color = getThemeColor(); });
-}
+(function() {
+  'use strict';
 
-function loadTheme() {
-  const saved = localStorage.getItem('theme');
-  const theme = saved || 'dark'; // پیش‌فرض تاریک
-  setTheme(theme);
-}
+  /* =================== ۱. پیکربندی اصلی =================== */
+  const CONFIG = {
+    particles: {
+      desktopCount: 250,
+      mobileCount: 100,
+      mouseRadius: 200,
+      speedFactor: 1,
+      glowFactor: 15,
+      fpsThreshold: 30,
+      mobileBreakpoint: 768,
+      tabletBreakpoint: 1024
+    },
+    notifications: {
+      duration: 3500,
+      animationDuration: 400
+    },
+    music: {
+      url: 'https://dl.musicdel.ir/Music/1400/05/naser_chashmazar_barane_eshghe.mp3',
+      volume: 0.2,
+      fadeDuration: 1000
+    },
+    api: {
+      ip: 'https://api.ipify.org?format=json',
+      geo: 'https://ipapi.co/{ip}/json/',
+      weather: 'https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current=temperature_2m,apparent_temperature,weather_code,relative_humidity_2m,wind_speed_10m&timezone=Asia%2FTehran'
+    },
+    validation: {
+      minUsername: 3,
+      minPassword: 6
+    }
+  };
 
-function toggleTheme() {
-  const current = document.body.getAttribute('data-theme') || 'dark';
-  const next = current === 'dark' ? 'light' : 'dark';
-  setTheme(next);
-  showNotification(`تم به ${next === 'dark' ? 'تاریک' : 'روشن'} تغییر کرد`, 'success');
-}
+  /* =================== ۲. مدیریت تم پیشرفته =================== */
+  const ThemeManager = {
+    init() {
+      this.loadTheme();
+      this.setupToggle();
+    },
 
-loadTheme();
+    loadTheme() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = saved || (prefersDark ? 'dark' : 'light');
+      this.setTheme(theme);
+    },
 
-// ۲. ذرات نور (کاهش تعداد در موبایل)
-const canvas = document.getElementById('particles-canvas');
-const ctx = canvas.getContext('2d', { alpha: true });
-let particles = [];
-let mouse = { x: null, y: null, radius: 180 };
-let animationFrame, lastTime = 0;
+    setTheme(theme) {
+      document.body.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+      
+      // بروزرسانی رنگ ذرات
+      if (window.ParticleSystem) {
+        window.ParticleSystem.updateColors();
+      }
+      
+      // بروزرسانی متا تگ برای حالت نمایش
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', 
+        theme === 'dark' ? '#0a1118' : '#f0f7fc'
+      );
+    },
 
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  initParticles();
-}
+    toggle() {
+      const current = document.body.getAttribute('data-theme') || 'dark';
+      const next = current === 'dark' ? 'light' : 'dark';
+      this.setTheme(next);
+      
+      // انیمیشن ویژه تغییر تم
+      this.animateThemeTransition();
+      
+      NotificationManager.show(
+        `تم به ${next === 'dark' ? '🌙 تاریک' : '☀️ روشن'} تغییر کرد`, 
+        'success'
+      );
+    },
 
-window.addEventListener('resize', debounce(resizeCanvas, 300));
-canvas.addEventListener('mousemove', e => {
-  mouse.x = e.clientX;
-  mouse.y = e.clientY;
-});
-canvas.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
+    animateThemeTransition() {
+      const overlay = document.createElement('div');
+      overlay.style.cssText = `
+        position: fixed;
+        inset: 0;
+        background: ${document.body.getAttribute('data-theme') === 'dark' ? '#000' : '#fff'};
+        opacity: 0.3;
+        z-index: 9999;
+        pointer-events: none;
+        animation: fadeOut 0.5s ease-out forwards;
+      `;
+      document.body.appendChild(overlay);
+      setTimeout(() => overlay.remove(), 500);
+    }
+  };
 
-class SmartParticle {
-  constructor() { this.reset(); }
-  reset() {
-    this.x = Math.random() * canvas.width;
-    this.y = Math.random() * canvas.height;
-    this.size = Math.random() * 3 + 1;
-    this.speedX = Math.random() * 1.2 - 0.6;
-    this.speedY = Math.random() * 1.2 - 0.6;
-    this.color = getThemeColor();
-    this.glow = Math.random() * 0.7 + 0.3;
-  }
-  update() {
-    this.x += this.speedX;
-    this.y += this.speedY;
-    if (this.x < 0 || this.x > canvas.width) this.speedX *= -0.9;
-    if (this.y < 0 || this.y > canvas.height) this.speedY *= -0.9;
+  /* =================== ۳. سیستم ذرات نور پیشرفته =================== */
+  const ParticleSystem = {
+    canvas: null,
+    ctx: null,
+    particles: [],
+    mouse: { x: null, y: null, radius: CONFIG.particles.mouseRadius },
+    animationFrame: null,
+    lastTime: 0,
+    isMobile: false,
+    isRunning: true,
 
-    if (mouse.x && mouse.y) {
-      const dx = mouse.x - this.x;
-      const dy = mouse.y - this.y;
-      const dist = Math.hypot(dx, dy);
-      if (dist < mouse.radius) {
-        const force = (mouse.radius - dist) / mouse.radius * 4;
-        this.speedX -= (dx / dist) * force;
-        this.speedY -= (dy / dist) * force;
+    init() {
+      this.canvas = document.getElementById('particles-canvas');
+      if (!this.canvas) {
+        this.createCanvas();
+      }
+      this.ctx = this.canvas.getContext('2d', { alpha: true });
+      this.checkMobile();
+      this.setupEventListeners();
+      this.resize();
+      this.initParticles();
+      this.animate();
+    },
+
+    createCanvas() {
+      this.canvas = document.createElement('canvas');
+      this.canvas.id = 'particles-canvas';
+      document.body.prepend(this.canvas);
+    },
+
+    checkMobile() {
+      this.isMobile = window.innerWidth < CONFIG.particles.mobileBreakpoint;
+    },
+
+    setupEventListeners() {
+      // تریتل موس
+      this.canvas.addEventListener('mousemove', (e) => {
+        this.mouse.x = e.clientX;
+        this.mouse.y = e.clientY;
+      });
+
+      this.canvas.addEventListener('mouseleave', () => {
+        this.mouse.x = null;
+        this.mouse.y = null;
+      });
+
+      // پشتیبانی از تاچ
+      this.canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        this.mouse.x = touch.clientX;
+        this.mouse.y = touch.clientY;
+      });
+
+      this.canvas.addEventListener('touchend', () => {
+        this.mouse.x = null;
+        this.mouse.y = null;
+      });
+
+      // ریسایز با دیبانس
+      window.addEventListener('resize', this.debounce(() => {
+        this.checkMobile();
+        this.resize();
+        this.initParticles();
+      }, 250));
+
+      // توقف انیمیشن در تب غیرفعال
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          this.isRunning = false;
+          cancelAnimationFrame(this.animationFrame);
+        } else {
+          this.isRunning = true;
+          this.lastTime = performance.now();
+          this.animate();
+        }
+      });
+    },
+
+    resize() {
+      this.canvas.width = window.innerWidth;
+      this.canvas.height = window.innerHeight;
+    },
+
+    initParticles() {
+      this.particles = [];
+      const density = (window.innerWidth * window.innerHeight) / 
+        (this.isMobile ? 14000 : 6000);
+      const count = Math.min(
+        this.isMobile ? CONFIG.particles.mobileCount : CONFIG.particles.desktopCount,
+        Math.floor(density)
+      );
+      
+      for (let i = 0; i < count; i++) {
+        this.particles.push(new Particle(this));
+      }
+    },
+
+    updateColors() {
+      this.particles.forEach(p => p.updateColor());
+    },
+
+    animate(currentTime) {
+      if (!this.isRunning) return;
+      
+      this.animationFrame = requestAnimationFrame((t) => this.animate(t));
+      
+      if (!this.lastTime) {
+        this.lastTime = currentTime;
+        return;
+      }
+      
+      const delta = currentTime - this.lastTime;
+      if (delta > 1000 / CONFIG.particles.fpsThreshold) {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // به‌روزرسانی و رسم ذرات
+        this.particles.forEach(particle => {
+          particle.update(this.mouse);
+          particle.draw(this.ctx);
+        });
+        
+        // رسم اتصالات بین ذرات
+        this.drawConnections();
+        
+        this.lastTime = currentTime;
+      }
+    },
+
+    drawConnections() {
+      const maxDistance = this.isMobile ? 80 : 120;
+      
+      for (let i = 0; i < this.particles.length; i++) {
+        for (let j = i + 1; j < this.particles.length; j++) {
+          const dx = this.particles[i].x - this.particles[j].x;
+          const dy = this.particles[i].y - this.particles[j].y;
+          const distance = Math.hypot(dx, dy);
+          
+          if (distance < maxDistance) {
+            const opacity = (1 - distance / maxDistance) * 0.25;
+            this.ctx.beginPath();
+            this.ctx.strokeStyle = `rgba(0, 212, 255, ${opacity})`;
+            this.ctx.lineWidth = 0.8;
+            this.ctx.moveTo(this.particles[i].x, this.particles[i].y);
+            this.ctx.lineTo(this.particles[j].x, this.particles[j].y);
+            this.ctx.stroke();
+          }
+        }
+      }
+    },
+
+    debounce(func, wait) {
+      let timeout;
+      return (...args) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func(...args), wait);
+      };
+    }
+  };
+
+  /* =================== ۴. کلاس ذره =================== */
+  class Particle {
+    constructor(system) {
+      this.system = system;
+      this.reset();
+    }
+
+    reset() {
+      this.x = Math.random() * this.system.canvas.width;
+      this.y = Math.random() * this.system.canvas.height;
+      this.size = Math.random() * 2.5 + 0.8;
+      this.speedX = (Math.random() - 0.5) * 1.2;
+      this.speedY = (Math.random() - 0.5) * 1.2;
+      this.baseColor = this.getBaseColor();
+      this.glow = Math.random() * 0.6 + 0.3;
+      this.life = 1;
+    }
+
+    getBaseColor() {
+      const theme = document.body.getAttribute('data-theme');
+      const blue = theme === 'light' ? '0, 90, 180' : '0, 212, 255';
+      const alpha = (Math.random() * 0.5 + 0.4).toFixed(2);
+      return `rgba(${blue}, ${alpha})`;
+    }
+
+    updateColor() {
+      this.baseColor = this.getBaseColor();
+    }
+
+    update(mouse) {
+      // حرکت پایه
+      this.x += this.speedX;
+      this.y += this.speedY;
+
+      // بازتاب از لبه‌ها
+      if (this.x < 0 || this.x > this.system.canvas.width) {
+        this.speedX *= -0.95;
+        this.x = Math.max(0, Math.min(this.x, this.system.canvas.width));
+      }
+      if (this.y < 0 || this.y > this.system.canvas.height) {
+        this.speedY *= -0.95;
+        this.y = Math.max(0, Math.min(this.y, this.system.canvas.height));
+      }
+
+      // تعامل با موس
+      if (mouse.x && mouse.y) {
+        const dx = mouse.x - this.x;
+        const dy = mouse.y - this.y;
+        const dist = Math.hypot(dx, dy);
+        
+        if (dist < mouse.radius) {
+          const force = (mouse.radius - dist) / mouse.radius * 3;
+          const angle = Math.atan2(dy, dx);
+          this.speedX -= Math.cos(angle) * force;
+          this.speedY -= Math.sin(angle) * force;
+          
+          // افزایش درخشش نزدیک موس
+          this.glow = Math.min(1, this.glow + 0.1);
+        } else {
+          this.glow = Math.max(0.3, this.glow - 0.01);
+        }
       }
     }
+
+    draw(ctx) {
+      ctx.shadowColor = this.baseColor;
+      ctx.shadowBlur = this.glow * 15;
+      ctx.fillStyle = this.baseColor;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
   }
-  draw() {
-    ctx.shadowColor = this.color;
-    ctx.shadowBlur = this.glow * 15;
-    ctx.fillStyle = this.color;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fill();
-  }
-}
 
-function getThemeColor() {
-  return document.body.getAttribute('data-theme') === 'light'
-    ? `rgba(0, 90, 180, ${Math.random()*0.5 + 0.4})`
-    : `rgba(0, 212, 255, ${Math.random()*0.6 + 0.4})`;
-}
+  /* =================== ۵. مدیریت نوتیفیکیشن =================== */
+  const NotificationManager = {
+    container: null,
+    activeNotifications: [],
 
-function initParticles() {
-  particles = [];
-  const density = window.innerWidth * window.innerHeight / (window.innerWidth < 768 ? 14000 : 6000);
-  const count = Math.min(300, Math.floor(density));
-  for (let i = 0; i < count; i++) particles.push(new SmartParticle());
-}
+    init() {
+      this.createContainer();
+    },
 
-function animate(time) {
-  animationFrame = requestAnimationFrame(animate);
-  if (!lastTime) lastTime = time;
-  const delta = time - lastTime;
-  if (delta > 30) {  // ~33fps برای صرفه‌جویی
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => { p.update(); p.draw(); });
-    lastTime = time;
-  }
-}
+    createContainer() {
+      this.container = document.createElement('div');
+      this.container.id = 'notification-container';
+      this.container.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        pointer-events: none;
+      `;
+      document.body.appendChild(this.container);
+    },
 
-function debounce(func, wait) {
-  let timeout;
-  return (...args) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
+    show(message, type = 'info', duration = CONFIG.notifications.duration) {
+      const colors = {
+        success: 'linear-gradient(135deg, #4CAF50, #45a049)',
+        error: 'linear-gradient(135deg, #f44336, #d32f2f)',
+        info: 'linear-gradient(135deg, #2196F3, #1976D2)',
+        warning: 'linear-gradient(135deg, #FFC107, #FFA000)'
+      };
+
+      const icons = {
+        success: '✅',
+        error: '❌',
+        info: 'ℹ️',
+        warning: '⚠️'
+      };
+
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.style.cssText = `
+        background: ${colors[type]};
+        color: white;
+        padding: 14px 24px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-family: 'Vazirmatn', sans-serif;
+        direction: rtl;
+        transform: translateX(120%);
+        animation: slideIn 0.4s ease-out forwards;
+        min-width: 280px;
+        max-width: 400px;
+        pointer-events: auto;
+      `;
+
+      notification.innerHTML = `
+        <span style="font-size: 1.3em;">${icons[type]}</span>
+        <span style="flex:1;">${message}</span>
+        <button style="background:none;border:none;color:white;font-size:1.2em;cursor:pointer;opacity:0.7;">×</button>
+      `;
+
+      // دکمه بستن
+      const closeBtn = notification.querySelector('button');
+      closeBtn.addEventListener('click', () => this.close(notification));
+
+      this.container.appendChild(notification);
+      this.activeNotifications.push(notification);
+
+      // Auto close
+      setTimeout(() => {
+        if (notification.parentNode) {
+          this.close(notification);
+        }
+      }, duration);
+    },
+
+    close(notification) {
+      notification.style.animation = 'slideOut 0.4s ease-in forwards';
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.remove();
+          this.activeNotifications = this.activeNotifications.filter(n => n !== notification);
+        }
+      }, 400);
+    }
   };
-}
 
-resizeCanvas();
-initParticles();
-requestAnimationFrame(animate);
+  /* =================== ۶. مدیریت تاریخ و زمان =================== */
+  const DateTimeManager = {
+    elements: {
+      datetime: document.getElementById('datetime'),
+      countdown: document.getElementById('nowruz-countdown')
+    },
+    
+    persianWeekdays: ['یک‌شنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'],
+    persianMonths: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'],
 
-// ۳. ساعت و تاریخ شمسی
-const persianWeekdays = ['یک‌شنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنج‌شنبه','جمعه','شنبه'];
+    init() {
+      this.update();
+      setInterval(() => this.update(), 1000);
+    },
 
-function updateDateTime() {
-  const now = new Date();
-  const weekday = persianWeekdays[now.getDay()];
-  const dateStr = now.toLocaleString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Tehran' });
-  const timeStr = now.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-  document.getElementById('datetime').textContent = `${weekday} ${dateStr} ساعت ${timeStr}`;
-}
-setInterval(updateDateTime, 1000);
-updateDateTime();
+    update() {
+      const now = new Date();
+      this.updateDateTime(now);
+      this.updateNowruzCountdown(now);
+    },
 
-// ۴. دریافت IP + آب و هوا (بدون کلید API)
-const ipEl = document.getElementById('user-ip');
-const weatherEl = document.getElementById('weather') || document.createElement('div');
+    updateDateTime(now) {
+      if (!this.elements.datetime) return;
 
-async function fetchIPAndWeather() {
-  try {
-    const ipRes = await fetch('https://api.ipify.org?format=json');
-    const { ip } = await ipRes.json();
-    ipEl.textContent = ip;
+      const weekday = this.persianWeekdays[now.getDay()];
+      
+      // تاریخ شمسی
+      const dateStr = now.toLocaleDateString('fa-IR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      
+      // زمان
+      const timeStr = now.toLocaleTimeString('fa-IR', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      });
 
-    // موقعیت تقریبی
-    const geoRes = await fetch(`https://ipapi.co/${ip}/json/`);
-    const geo = await geoRes.json();
-    const lat = geo.latitude, lon = geo.longitude;
+      this.elements.datetime.innerHTML = `
+        <span style="display:block; font-size:1.1em;">${weekday}</span>
+        <span style="display:block; font-size:0.9em; opacity:0.8;">${dateStr}</span>
+        <span style="display:block; font-size:1.2em; color:var(--primary);">${timeStr}</span>
+      `;
+    },
 
-    // آب و هوا با Open-Meteo
-    const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,weather_code&timezone=Asia%2FTehran`);
-    const data = await weatherRes.json();
-    if (data.current) {
-      const temp = Math.round(data.current.temperature_2m);
-      const feel = Math.round(data.current.apparent_temperature);
-      const code = data.current.weather_code;
-      const emoji = code <= 3 ? '☀️' : code <= 48 ? '☁️' : code <= 67 ? '🌧️' : '❄️';
-      weatherEl.innerHTML = `<div style="display:flex;align-items:center;gap:8px;justify-content:center;">
-        <span style="font-size:1.4em">${emoji}</span> ${temp}°C (احساس ${feel}°)</div>`;
-      weatherEl.style.marginTop = '12px';
-      document.querySelector('.login-box').appendChild(weatherEl);
+    updateNowruzCountdown(now) {
+      if (!this.elements.countdown) {
+        this.createCountdownElement();
+      }
+
+      const nowruz2026 = new Date(2026, 2, 20, 0, 30, 0); // ۲۰ مارس ۲۰۲۶
+      const diff = nowruz2026 - now;
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+      if (days > 0 && days < 60) {
+        this.elements.countdown.innerHTML = `
+          🎉 ${this.toPersianNumber(days)} روز 
+          ${hours > 0 ? `و ${this.toPersianNumber(hours)} ساعت` : ''}
+          تا نوروز ۱۴۰۵
+        `;
+        this.elements.countdown.style.display = 'block';
+      } else {
+        this.elements.countdown.style.display = 'none';
+      }
+    },
+
+    createCountdownElement() {
+      this.elements.countdown = document.createElement('div');
+      this.elements.countdown.id = 'nowruz-countdown';
+      this.elements.countdown.style.cssText = `
+        margin-top: 8px;
+        font-size: 0.9rem;
+        color: var(--primary);
+        animation: pulse 2s infinite;
+        background: var(--glass-bg);
+        padding: 6px 12px;
+        border-radius: 20px;
+        display: inline-block;
+      `;
+      document.querySelector('.info-bar')?.appendChild(this.elements.countdown);
+    },
+
+    toPersianNumber(num) {
+      const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+      return num.toString().replace(/\d/g, d => persianDigits[d]);
     }
-  } catch (err) {
-    ipEl.textContent = 'خطا';
-    weatherEl.textContent = 'آب‌و‌هوا: در دسترس نیست';
-  }
-}
-fetchIPAndWeather();
+  };
 
-// ۵. نمایش/مخفی رمز عبور
-const togglePassword = document.querySelector('.toggle-password');
-const passwordInput = document.getElementById('password');
-if (togglePassword && passwordInput) {
-  togglePassword.addEventListener('click', () => {
-    const type = passwordInput.type === 'password' ? 'text' : 'password';
-    passwordInput.type = type;
-    togglePassword.textContent = type === 'password' ? '👁' : '🙈';
-  });
-}
+  /* =================== ۷. مدیریت IP و آب و هوا =================== */
+  const IPWeatherManager = {
+    ipEl: document.getElementById('user-ip'),
+    weatherEl: document.getElementById('weather'),
 
-// ۶. تغییر تم با ripple و notification
-const themeToggle = document.getElementById('theme-toggle');
-if (themeToggle) {
-  themeToggle.addEventListener('click', (e) => {
-    const ripple = document.createElement('span');
-    ripple.classList.add('ripple');
-    themeToggle.appendChild(ripple);
-    const rect = themeToggle.getBoundingClientRect();
-    ripple.style.left = `${e.clientX - rect.left}px`;
-    ripple.style.top = `${e.clientY - rect.top}px`;
-    setTimeout(() => ripple.remove(), 700);
+    async init() {
+      await this.fetchIPAndWeather();
+    },
 
-    toggleTheme();
-  });
-}
+    async fetchIPAndWeather() {
+      try {
+        // دریافت IP
+        const ip = await this.fetchIP();
+        this.ipEl.textContent = ip;
+        
+        // دریافت موقعیت
+        const geo = await this.fetchGeo(ip);
+        
+        // دریافت آب و هوا
+        await this.fetchWeather(geo.latitude, geo.longitude);
+        
+        NotificationManager.show('📍 موقعیت شما شناسایی شد', 'success');
+      } catch (error) {
+        console.error('خطا در دریافت اطلاعات:', error);
+        this.ipEl.textContent = 'خطا در دریافت IP';
+        this.showWeatherError();
+      }
+    },
 
-// ۷. نوتیفیکیشن
-function showNotification(msg, type = 'info') {
-  const colors = { success: '#4CAF50', error: '#f44336', info: '#2196F3', warning: '#FFC107' };
-  const n = document.createElement('div');
-  n.className = `notification ${type}`;
-  n.textContent = msg;
-  n.style.background = colors[type] || '#2196F3';
-  document.body.appendChild(n);
-  setTimeout(() => {
-    n.style.animation = 'slideOut 0.4s forwards';
-    setTimeout(() => n.remove(), 400);
-  }, 3200);
-}
+    async fetchIP() {
+      const response = await fetch(CONFIG.api.ip);
+      const data = await response.json();
+      return data.ip;
+    },
 
-// ۸. موسیقی پس‌زمینه (با لینک مستقیم)
-const audio = new Audio('https://dl.musicdel.ir/Music/1400/05/naser_chashmazar_barane_eshghe.mp3');
-audio.loop = true;
-audio.volume = 0.18;
+    async fetchGeo(ip) {
+      const url = CONFIG.api.geo.replace('{ip}', ip);
+      const response = await fetch(url);
+      return await response.json();
+    },
 
-const musicToggle = document.getElementById('music-toggle') || document.createElement('button');
-if (!document.getElementById('music-toggle')) {
-  musicToggle.id = 'music-toggle';
-  musicToggle.textContent = '🎵';
-  musicToggle.style.cssText = 'position:fixed;bottom:20px;left:20px;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#0099cc);color:white;font-size:24px;cursor:pointer;z-index:1000;box-shadow:0 4px 15px rgba(0,0,0,0.4);border:none;display:flex;align-items:center;justify-content:center;';
-  document.body.appendChild(musicToggle);
-}
+    async fetchWeather(lat, lon) {
+      const url = CONFIG.api.weather
+        .replace('{lat}', lat)
+        .replace('{lon}', lon);
+      
+      const response = await fetch(url);
+      const data = await response.json();
 
-musicToggle.addEventListener('click', () => {
-  if (audio.paused) {
-    audio.play().catch(() => showNotification('اجازه پخش صدا را بدهید', 'info'));
-    musicToggle.textContent = '🔊';
-  } else {
-    audio.pause();
-    musicToggle.textContent = '🎵';
-  }
-});
+      if (data.current) {
+        this.displayWeather(data.current);
+      }
+    },
 
-// ۹. لاگین ساده (فقط تست)
-document.querySelector('.login-btn')?.addEventListener('click', (e) => {
-  e.preventDefault();
-  const user = document.getElementById('username')?.value.trim();
-  const pass = document.getElementById('password')?.value.trim();
-  if (user && pass) {
-    if (user.length > 3 && pass.length > 5) {
-      showNotification('ورود موفق! خوش آمدید', 'success');
-    } else {
-      showNotification('نام کاربری یا رمز کوتاه است', 'error');
+    displayWeather(current) {
+      const temp = Math.round(current.temperature_2m);
+      const feel = Math.round(current.apparent_temperature);
+      const humidity = current.relative_humidity_2m;
+      const wind = current.wind_speed_10m;
+      
+      const weatherCodes = {
+        0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️',
+        45: '🌫️', 48: '🌫️', 51: '🌧️', 61: '🌧️',
+        71: '🌨️', 95: '⛈️'
+      };
+      
+      const emoji = weatherCodes[current.weather_code] || '🌡️';
+
+      this.weatherEl.innerHTML = `
+        <div style="display:flex; align-items:center; gap:12px; justify-content:center; flex-wrap:wrap;">
+          <span style="font-size:1.8em;">${emoji}</span>
+          <div>
+            <div style="font-size:1.2em; font-weight:bold;">${temp}°C</div>
+            <div style="font-size:0.8em; opacity:0.8;">احساس ${feel}°C</div>
+          </div>
+          <div style="border-right:1px solid rgba(255,255,255,0.2); padding-right:12px;">
+            <div>💧 ${humidity}%</div>
+            <div>🌪️ ${wind} km/h</div>
+          </div>
+        </div>
+      `;
+    },
+
+    showWeatherError() {
+      if (this.weatherEl) {
+        this.weatherEl.innerHTML = '🌡️ آب و هوا: موقتاً در دسترس نیست';
+      }
     }
+  };
+
+  /* =================== ۸. مدیریت فرم =================== */
+  const FormManager = {
+    elements: {
+      username: document.getElementById('username'),
+      password: document.getElementById('password'),
+      loginBtn: document.querySelector('.login-btn'),
+      togglePassword: document.querySelector('.toggle-password')
+    },
+
+    init() {
+      this.setupPasswordToggle();
+      this.setupLoginButton();
+      this.setupInputValidation();
+    },
+
+    setupPasswordToggle() {
+      if (!this.elements.togglePassword || !this.elements.password) return;
+
+      this.elements.togglePassword.addEventListener('click', () => {
+        const type = this.elements.password.type === 'password' ? 'text' : 'password';
+        this.elements.password.type = type;
+        this.elements.togglePassword.textContent = type === 'password' ? '👁' : '🙈';
+        
+        // انیمیشن
+        this.elements.togglePassword.animate([
+          { transform: 'scale(1)' },
+          { transform: 'scale(1.2)' },
+          { transform: 'scale(1)' }
+        ], {
+          duration: 300,
+          easing: 'ease-in-out'
+        });
+      });
+    },
+
+    setupLoginButton() {
+      if (!this.elements.loginBtn) return;
+
+      this.elements.loginBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.handleLogin();
+      });
+
+      // Enter key
+      document.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          this.handleLogin();
+        }
+      });
+    },
+
+    setupInputValidation() {
+      if (this.elements.username) {
+        this.elements.username.addEventListener('input', () => {
+          this.validateField(this.elements.username);
+        });
+      }
+
+      if (this.elements.password) {
+        this.elements.password.addEventListener('input', () => {
+          this.validateField(this.elements.password);
+        });
+      }
+    },
+
+    validateField(input) {
+      const isValid = input.value.trim().length > 0;
+      input.style.borderColor = isValid ? 'var(--success)' : 'var(--error)';
+      return isValid;
+    },
+
+    handleLogin() {
+      const username = this.elements.username?.value.trim() || '';
+      const password = this.elements.password?.value.trim() || '';
+
+      // اعتبارسنجی
+      if (!username || !password) {
+        NotificationManager.show('⚠️ لطفاً همه فیلدها را پر کنید', 'warning');
+        this.shakeForm();
+        return;
+      }
+
+      if (username.length < CONFIG.validation.minUsername) {
+        NotificationManager.show(`👤 نام کاربری حداقل ${CONFIG.validation.minUsername} کاراکتر`, 'error');
+        this.elements.username?.focus();
+        return;
+      }
+
+      if (password.length < CONFIG.validation.minPassword) {
+        NotificationManager.show(`🔒 رمز عبور حداقل ${CONFIG.validation.minPassword} کاراکتر`, 'error');
+        this.elements.password?.focus();
+        return;
+      }
+
+      // شبیه‌سازی ورود موفق
+      this.simulateLogin(username, password);
+    },
+
+    simulateLogin(username, password) {
+      // نمایش لودینگ
+      this.elements.loginBtn.innerHTML = '<span class="loading"></span> در حال ورود...';
+      this.elements.loginBtn.disabled = true;
+
+      setTimeout(() => {
+        // Reset button
+        this.elements.loginBtn.innerHTML = 'ورود به میدان';
+        this.elements.loginBtn.disabled = false;
+
+        // Check credentials
+        if (username === 'admin' && password === '123456') {
+          NotificationManager.show('✅ خوش آمدید! ورود موفق', 'success');
+          this.celebrateLogin();
+        } else {
+          NotificationManager.show('❌ نام کاربری یا رمز عبور اشتباه است', 'error');
+          this.elements.password.value = '';
+          this.elements.password.focus();
+        }
+      }, 1500);
+    },
+
+    shakeForm() {
+      const loginBox = document.querySelector('.login-box');
+      if (loginBox) {
+        loginBox.animate([
+          { transform: 'translateX(0)' },
+          { transform: 'translateX(-10px)' },
+          { transform: 'translateX(10px)' },
+          { transform: 'translateX(-5px)' },
+          { transform: 'translateX(5px)' },
+          { transform: 'translateX(0)' }
+        ], {
+          duration: 400,
+          easing: 'ease-in-out'
+        });
+      }
+    },
+
+    celebrateLogin() {
+      // ایجاد ذرات ویژه برای جشن ورود
+      for (let i = 0; i < 20; i++) {
+        setTimeout(() => {
+          const particle = {
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            size: Math.random() * 5 + 2,
+            color: `hsl(${Math.random() * 360}, 100%, 50%)`
+          };
+          
+          const ctx = document.getElementById('particles-canvas')?.getContext('2d');
+          if (ctx) {
+            ctx.shadowBlur = 20;
+            ctx.fillStyle = particle.color;
+            ctx.beginPath();
+            ctx.arc(particle.x, particlePath();
+            ctx.arc(particle.x, particle.y, particle.size.y, particle.size, 0,, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }, i * 50);
+      }
+    }
+  };
+
+ Math.PI * 2);
+            ctx.fill();
+          }
+        }, i * 50);
+      }
+    }
+  };
+
+  /* =================== ۹. مدیریت موسیقی =================== */
+  const MusicManager = {
+    audio: null,
+    button: null,
+    is  /* =================== ۹. مدیریت موسیقی =================== */
+  const MusicManager = {
+    audio: null,
+    button: null,
+    isPlaying:Playing: false,
+ false,
+    fadeInterval: null,
+
+       fadeInterval: null init() {
+      this.createButton();
+      this.setupAudio();
+    },
+
+    setupAudio() {
+      this.audio = new Audio(CONFIG.music.url);
+      this.audio,
+
+    init() {
+      this.createButton();
+      this.setupAudio();
+    },
+
+    setupAudio() {
+      this.audio = new Audio(CONFIG.music.url);
+      this.audio.loop = true;
+     .loop = true;
+      this.audio.volume = 0;
+
+      // Load metadata
+      this.audio.volume = 0;
+
+      // Load metadata
+      this. this.audio.addEventListener('loadedaudio.addEventListener('loadedmetadatametadata', () => {
+        console.log('', () => {
+        console.log('🎵 موسیقی بارگذاری شد');
+      });
+
+      this.audio.addEventListener('error', () =>🎵 موسیقی بارگذاری شد');
+      });
+
+      this.audio.addEventListener('error', () => {
+        console.error('❌ خطا در پخش موسیقی');
+        this.button.style {
+        console.error('❌ خطا در پخش موسیقی');
+        this.button.style.opacity = '0.5';
+      });
+    },
+
+.opacity = '0.5';
+      });
+    },
+
+    createButton() {
+      this.button = document    createButton() {
+      this.button = document.getElementById('.getElementById('music-toggle');
+      
+      if (!this.button) {
+        this.button =music-toggle');
+      
+      if (!this.button) {
+        this.button = document.createElement('button');
+        this.button document.createElement('button');
+        this.button.id =.id = 'music 'music-toggle';
+        document.body.appendChild-toggle';
+        document.body.appendChild(this.button(this.button);
+      }
+
+     );
+      }
+
+      this.button this.button.innerHTML =.innerHTML = '🎵';
+      this.button.setAttribute('aria-label', 'پخش '🎵';
+      this.button.setAttribute('aria-label', 'پخش/توقف مو/توقف موسیقی');
+      
+      this.button.addEventListener('clickسیقی');
+      
+      this.button.addEventListener('click', () => this.toggle());
+    },
+
+    toggle() {
+      if (this.isPlaying) {
+        this.p', () => this.toggle());
+    },
+
+    toggle() {
+      if (this.isPlaying) {
+        this.pause();
+ause();
+      } else {
+        this.play();
+      }
+    },
+
+    async play() {
+      try {
+        await this.audio.play();
+        this.isPlaying = true;
+        this      } else {
+        this.play();
+      }
+    },
+
+    async play() {
+      try {
+        await this.audio.play();
+        this.isPlaying = true;
+        this.button.innerHTML = '🔊';
+        
+        // fade in
+        let vol = 0;
+        this.fadeInterval = setInterval(() => {
+         .button.innerHTML = '🔊';
+        
+        // fade in
+        let vol = 0;
+        this.fadeInterval = setInterval(() => {
+          vol vol += 0 += 0.02.02;
+         ;
+          if (vol >= if (vol >= CONFIG.music CONFIG.music.volume.volume) {
+            this) {
+            this.audio.audio.volume.volume = CONFIG.music.volume;
+            clear = CONFIG.music.volume;
+            clearInterval(thisInterval(this.fadeInterval);
+          } else {
+            this.audio.volume = vol;
+          }
+        }, 50);
+
+        Notification.fadeInterval);
+          } else {
+            this.audio.volume = vol;
+          }
+        }, 50);
+
+        NotificationManager.showManager.show('🎶 موسیقی روش('🎶 موسیقی روشن شد', 'info');
+      } catch (error) {
+        NotificationManager.show('🔇 برای پخش موسیقی کلیک کنید', 'warning');
+        console.error('خطای پخش:', error);
+      }
+    },
+
+    pause() {
+     ن شد', 'info');
+      } catch (error) {
+        NotificationManager.show('🔇 برای پخش موسیقی کلیک کنید', 'warning');
+        console.error('خطای پخش:', error);
+      }
+    },
+
+    pause() {
+      // fade out
+      clearInterval // fade out
+      clearInterval(this.f(this.fadeInterval);
+      const startVol =adeInterval);
+      const startVol = this.audio.volume;
+      const this.audio.volume;
+      const steps steps = 20;
+      let step = 0;
+      
+      = 20;
+      let step = 0;
+      
+      const fade const fadeOutOut = set = setInterval(() => {
+        step++;
+        this.audio.volume = startVol * (1 - step / steps);
+Interval(() => {
+        step++;
+        this.audio.volume = startVol * (1 - step / steps);
+        
+        if (step >= steps) {
+          this.audio.pause();
+          this.audio.volume = 0;
+        
+        if (step >= steps) {
+          this.audio.pause();
+          this.audio.volume = 0;
+          this.isPlaying = false;
+          this          this.isPlaying = false;
+          this.button.innerHTML =.button.innerHTML = '🎵';
+          clearInterval(fadeOut);
+        }
+      }, 30);
+
+ '🎵';
+          clearInterval(fadeOut);
+        }
+      }, 30);
+
+      NotificationManager.show('🔇 موسیقی متوقف شد', 'info');
+    }
+  };
+
+  /* ===================      NotificationManager.show('🔇 موسیقی متوقف شد', 'info');
+    }
+  };
+
+  /* =================== ۱۰ ۱۰. مدیریت امنیت =================== */
+  const. مدیریت امنیت =================== */
+  const SecurityManager = {
+    init() {
+      this.prevent SecurityManager = {
+    init() {
+      this.preventRightClick();
+      this.preventCopyPassword();
+      this.preventInspect();
+    },
+
+    preventRightClick() {
+      document.addEventListener('contextmenu', (e) => {
+RightClick();
+      this.preventCopyPassword();
+      this.preventInspect();
+    },
+
+    preventRightClick() {
+      document.addEventListener('contextmenu', (e) => {
+        const target = e.target;
+        if (target.tagName !== 'INPUT' && target.tagName        const target = e.target;
+        if (target.tagName !== 'INPUT' && target !== 'TEXTAREA') {
+          e.preventDefault();
+       .tagName !== 'TEXTAREA') {
+          e.preventDefault();
+        }
+      });
+    },
+
+    }
+      });
+    },
+
+    preventCopyPassword() {
+      const passwordInput = document.getElementById('password');
+      if ( preventCopyPassword() {
+      const passwordInput = document.getElementById('password');
+      if (passwordInput) {
+        passwordpasswordInput) {
+        passwordInput.addEventListener('copyInput.addEventListener('copy', (e) => e.preventDefault());
+        passwordInput.addEventListener('cut', (e)', (e) => e.preventDefault());
+        passwordInput.addEventListener('cut', (e) => e => e.preventDefault());
+      }
+.preventDefault());
+      }
+    },
+
+       },
+
+    preventInspect() {
+      // جلوگیری از باز کردن developer preventInspect() {
+      // جلوگیری از باز کردن developer tools ( tools (اختیاری)
+اختیاری)
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'F12      document.addEventListener('keydown', (e) => {
+        if (e.key === 'F12' || 
+' || 
+            (e.            (e.ctrlKey && e.shiftctrlKey && e.shiftKey &&Key && e.key === 'I') ||
+            (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+            (e.ctrlKey && e.shiftKey && e.key === ' e.keyJ') ||
+            === 'J') ||
+            (e.ctrlKey && (e.ctrlKey && e.key === 'U')) {
+          e.preventDefault();
+        }
+      });
+    }
+  };
+
+  /* =================== ۱۱. انیمیشن‌های e.key === 'U')) {
+          e.preventDefault();
+        }
+      });
+    }
+  };
+
+  /* =================== ۱۱. انیمیشن‌های CSS =================== CSS =================== */
+  */
+  function addAnimations() function addAnimations() {
+    const style {
+    const style = document.createElement('style');
+ = document    style.textContent = `
+      @.createElement('style');
+    style.textContent = `
+      @keyframes slideInkeyframes slideIn {
+        from { {
+        from { transform: translateX(120%) translate transform: translateX(120%) translateY(Y(20px20px); opacity: 0; }
+        to {); opacity: 0; }
+        to { transform: translateX(0) translateY(0 transform: translateX(0) translateY(0);); opacity: 1; }
+      }
+
+      @keyframes opacity: 1; }
+      }
+
+      @keyframes slideOut {
+        from { transform: slideOut {
+        from { transform: translateX(0) translateY(0); opacity: 1; }
+        to { transform: translate translateX(0) translateY(0); opacity: 1; }
+        to { transform: translateX(120%) translateY(20px);X(120%) translateY(20px); opacity: opacity: 0; }
+      }
+
+      @keyframes fadeOut {
+        0; }
+      }
+
+      @keyframes fadeOut {
+        from { opacity: 0 from { opacity: 0.3.3;; }
+        to { opacity }
+        to { opacity: 0; }
+     : 0; }
+      }
+
+      }
+
+      @key @keyframes pulse {
+        frames pulse {
+        0%0% { transform: scale(1); opacity:  { transform: scale(1); opacity: 0.0.6; }
+        50%6; }
+        50% { transform: scale(1.05); opacity: 1; }
+        100% { transform: scale(1.05); opacity: 1; }
+        100% { transform: scale(1); opacity: 0. { transform: scale(1); opacity: 0.6;6; }
+      }
+
+      .loading {
+        display: inline-block }
+      }
+
+      .loading {
+        display: inline-block;
+        width: 20px;
+        height: ;
+        width: 20px;
+        height: 20px20px;
+        border:;
+        border: 3px 3px solid rgba(255,255,255,. solid rgba(255,255,255,.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation:3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin  spin 1s1s ease-in ease-in-out infinite;
+        margin-left: 8px-out infinite;
+        margin-left: 8px;
+      }
+
+      @keyframes spin;
+      }
+
+      @keyframes spin {
+        to { {
+        to { transform: transform: rotate(360deg rotate(360deg); }
+); }
+      }
+
+      #music-toggle {
+             }
+
+      #music-toggle {
+        transition: transition: all 0.3s all 0.3s cubic-b cubic-bezier(0.68ezier(0.68, -0.55, 0.265, 1.55);
+      }
+
+      #music-toggle:hover {
+        transform: scale(1.2) rotate(360deg);
+      }
+
+      .notification {
+       , -0.55, 0.265, 1.55);
+      }
+
+      #music-toggle:hover {
+        transform: scale(1.2) rotate(360deg);
+      }
+
+      .notification {
+        transition: transition: all 0.3s ease;
+      }
+
+      .notification button {
+        transition: opacity 0.3s ease;
+      }
+
+      .notification button:hover {
+        opacity: 1 !important;
+        transform: scale(1 all 0.3s ease;
+      }
+
+      .notification button {
+        transition: opacity 0.3s ease;
+      }
+
+      .notification button:hover {
+        opacity: 1 !important;
+        transform: scale(1.2.2);
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  /* =================== ۱۲. نمایش اطلاعات در کنسول =================== */
+  function showConsoleInfo() {
+    console.log('%c🚀 پروژه روشنــا - نسخه نهایی ۲.۰', 
+      'color: #00e0ff; font-size: 16px; font-weight: bold; padding: 5px;');
+    console.log('%c📅 تاریخ: ' + new Date().toLocaleString('fa-IR'),
+      'color: #4CAF50; font-size: 14px;');
+    console.log('%c🌙 تم فعلی: ' + document);
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  /* =================== ۱۲. نمایش اطلاعات در کنسول =================== */
+  function showConsoleInfo() {
+    console.log('%c🚀 پروژه روشنــا - نسخه نهایی ۲.۰', 
+      'color: #00e0ff; font-size: 16px; font-weight: bold; padding: 5px;');
+    console.log('%c📅 تاریخ: ' + new Date().toLocaleString('fa-IR'),
+      'color: #4CAF50; font-size: 14px;');
+    console.log('%c🌙 تم فعلی: ' + document.body.getAttribute('data-theme'),
+      'color: #FFC107; font-size: 14px;');
+    console.log('%c🎵 موسیقی: باران عشق - ناصر چشم‌آذر',
+      'color: #ff2d88; font-size: 14px;');
+    console.log('%c✨ تمام ویژگی‌ها فعال شدند',
+      '.body.getAttribute('data-theme'),
+      'color: #FFC107; font-size: 14px;');
+    console.log('%c🎵 موسیقی: باران عشق - ناصر چشم‌آذر',
+      'color: #ff2d88; font-size: 14px;');
+    console.log('%c✨ تمام ویژگی‌ها فعال شدند',
+      'color:color: #00e0ff; font-size: 14px; #00e0ff; font-size: 14 font-stylepx; font-style: italic: italic;');
+  }
+
+  /* =================;');
+  }
+
+  /* =================== ۱۳. مقداردهی اول== ۱۳. مقداردهی اولیه =================== */
+  function init() {
+یه =================== */
+  function init() {
+    console.time('روشنــا');
+
+    // اضافه    console.time('روشنــا');
+
+    // اضافه کردن ان کردن انیمیشنیمیشن‌های CSS
+    addAnimations‌های CSS
+    addAnimations();
+
+    // مقداردهی ماژول();
+
+    // مقداردهی ماژول‌ها‌ها
+   
+    ThemeManager.init();
+    Particle ThemeManager.init();
+    ParticleSystem.init();
+    DateTimeManagerSystem.init();
+    DateTimeManager.init();
+    NotificationManager.init();
+    FormManager.init();
+.init();
+    NotificationManager.init();
+    FormManager.init();
+    MusicManager.init();
+    SecurityManager.init();
+
+    // دریافت IP    MusicManager.init();
+    SecurityManager.init();
+
+    // دریافت IP و آب و هوا
+    IPWeatherManager.init();
+
+    // نمایش اطلاعات
+    showConsoleInfo و آب و هوا
+    IPWeatherManager.init();
+
+    // نمایش اطلاعات
+    showConsoleInfo();
+
+   ();
+
+    console.timeEnd('روشنــا');
+  console.timeEnd('روشنــا }
+
+  // شروع برنامه پس از بارگذاری کامل صفحه
+  if (document.readyState');
+  }
+
+  // شروع برنامه پس از بارگذاری کامل صفحه
+  if (document.readyState === === 'loading') {
+    'loading') {
+    document.addEventListener('DOM document.addEventListener('DOMContentLoadedContentLoaded', init);
+  } else', init);
   } else {
-    showNotification('فیلدها را پر کنید', 'warning');
+    {
+    init();
   }
-});
 
-// ۱۰. محافظت کلیک راست (اختیاری)
-document.addEventListener('contextmenu', e => {
-  if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-    e.preventDefault();
+  // ذ init();
   }
-});
 
-console.log('روشنــا - نسخه نهایی | موسیقی باران عشق فعال شد');
+  // ذخیرهخیره در global در global برای دست برای دسترسی از کنسرسی از کنسول
+  window.Rooshanول
+  window.Rooshan = {
+    theme: ThemeManager,
+    particles: ParticleSystem,
+    notifications = {
+    theme: ThemeManager,
+    particles: ParticleSystem,
+    notifications: NotificationManager,
+    music: NotificationManager,
+    music: Music: MusicManager,
+    version: '2.Manager,
+    version: '2.0.0'
+  };
+
+})();
