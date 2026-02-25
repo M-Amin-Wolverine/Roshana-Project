@@ -1,8 +1,10 @@
-<html lang="fa" dir="rtl"><head><style>body {transition: opacity ease-in 0.2s; } 
-body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relative; } 
-</style><style>body {transition: opacity ease-in 0.2s; } 
-body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relative; } 
-</style>
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <style>
+      body {transition: opacity ease-in 0.2s; } 
+      body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relative; } 
+  </style>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <meta name="theme-color" content="#0a1118">
@@ -16,7 +18,6 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
 
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/r17/stats.min.js"></script>
-  <script src="js/script.js"></script>
   <!-- CSS -->
   <link rel="stylesheet" href="style2.css">
 
@@ -78,12 +79,12 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
         </p>
 
         <!-- فرم -->
-        <form id="login-form" class="login-form" autocomplete="off" novalidate="">
+        <form id="login-form" class="login-form" action="/login" method="POST" autocomplete="off" novalidate="">
           <div class="form-group">
             <label for="username">نام کاربری</label>
             <div class="input-wrapper">
               <span class="input-icon">👤</span>
-              <input type="text" id="username" placeholder="مثال: student123" required="" autofocus="" minlength="3" aria-describedby="username-hint">
+              <input type="text" id="username" placeholder="مثال: student123" autofocus="" minlength="3" aria-describedby="username-hint" name="username" autocomplete="username" required>
             </div>
             
           </div>
@@ -92,14 +93,14 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
             <label for="password">رمز عبور</label>
             <div class="input-wrapper">
               <span class="input-icon">🔒</span>
-              <input type="password" id="password" placeholder="••••••••" required="" minlength="6" aria-describedby="password-hint">
+              <input type="password" name="password" autocomplete="current-password" id="password" placeholder="••••••••" required minlength="6" aria-describedby="password-hint">
             </div>
             
           </div>
 
           <div class="options">
             <label class="remember-me">
-              <input type="checkbox" id="remember" checked="">
+              <input type="checkbox" id="remember" name="remember" value="1" checked>
               <span class="checkbox-text">مرا به خاطر بسپار</span>
             </label>
             <a href="#" class="forgot-link" id="forgot-password">فراموشی رمز عبور؟</a>
@@ -212,7 +213,7 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
   <div id="notification-container"></div>
 
   <!-- اسکریپت JS -->
-  <script src="js/script.js"></script>
+  <script src="js/script.js" defer></script>
 
   <!-- برای جلوگیری از FOUC (Flash of Unstyled Content) -->
   <script>
@@ -220,5 +221,12 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
   </script>
 
 
-<veepn-lock-screen><style>@font-face{font-family:FigtreeVF;src:url(chrome-extension://majdfhpaihoncoakbjgbdhglocklcgno/fonts/FigtreeVF.woff2) format("woff2 supports variations"),url(chrome-extension://majdfhpaihoncoakbjgbdhglocklcgno/fonts/FigtreeVF.woff2) format("woff2-variations");font-weight:100 1000;font-display:swap}</style></veepn-lock-screen>
-</body></html>
+<veepn-lock-screen>
+  <style>
+    @font-face{font-family:FigtreeVF;src:url(chrome-extension://majdfhpaihoncoakbjgbdhglocklcgno/fonts/FigtreeVF.woff2) 
+      format("woff2 supports variations"),url(chrome-extension://majdfhpaihoncoakbjgbdhglocklcgno/fonts/FigtreeVF.woff2) 
+      format("woff2-variations");font-weight:100 1000;font-display:swap}
+  </style>
+</veepn-lock-screen>
+</body>
+</html>
