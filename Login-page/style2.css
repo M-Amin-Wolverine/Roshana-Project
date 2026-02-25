@@ -120,7 +120,7 @@ body.preload * {
 
 .image-wrapper {
     width: 100%;
-    aspect-ratio: 11 / 6;
+    aspect-ratio: 13 / 6;
     border-radius: var(--border-radius-sm);
     overflow: hidden;
     margin-bottom: 17px;
