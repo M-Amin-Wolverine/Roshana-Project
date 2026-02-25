@@ -1,4 +1,4 @@
-// تم روز/شب
+// ۱. تم روز/شب
 const themeToggle = document.getElementById('theme-toggle');
 const savedTheme = localStorage.getItem('theme') || 'dark';
 document.body.setAttribute('data-theme', savedTheme);
@@ -9,7 +9,7 @@ themeToggle.addEventListener('click', () => {
   localStorage.setItem('theme', newTheme);
 });
 
-// ذرات نور
+// ۲. ذرات نور
 const canvas = document.getElementById('particles-canvas');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
@@ -20,9 +20,9 @@ class Particle {
   constructor() {
     this.x = Math.random() * canvas.width;
     this.y = Math.random() * canvas.height;
-    this.size = Math.random() * 2.5 + 0.5;
-    this.speedX = Math.random() * 0.4 - 0.2;
-    this.speedY = Math.random() * 0.4 - 0.2;
+    this.size = Math.random() * 2.8 + 0.6;
+    this.speedX = Math.random() * 0.5 - 0.25;
+    this.speedY = Math.random() * 0.5 - 0.25;
   }
   update() {
     this.x += this.speedX;
@@ -31,7 +31,7 @@ class Particle {
     if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
   }
   draw() {
-    ctx.fillStyle = 'rgba(78, 205, 196, 0.7)';
+    ctx.fillStyle = 'rgba(0, 212, 255, 0.75)';
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
     ctx.fill();
@@ -40,7 +40,7 @@ class Particle {
 
 function initParticles() {
   particles = [];
-  for (let i = 0; i < 100; i++) particles.push(new Particle());
+  for (let i = 0; i < 120; i++) particles.push(new Particle());
 }
 
 function animateParticles() {
@@ -58,10 +58,10 @@ window.addEventListener('resize', () => {
   initParticles();
 });
 
-// ساعت و تاریخ شمسی + IP
+// ۳. ساعت و تاریخ شمسی + IP
 function updateDateTime() {
   const now = new Date();
-  const options = {
+  const farsi = now.toLocaleString('fa-IR', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
@@ -70,20 +70,28 @@ function updateDateTime() {
     minute: '2-digit',
     second: '2-digit',
     hour12: false
-  };
-  const farsiDate = now.toLocaleDateString('fa-IR', options);
-  document.getElementById('datetime').textContent = farsiDate;
+  });
+  document.getElementById('datetime').textContent = farsi;
 }
 
 setInterval(updateDateTime, 1000);
 updateDateTime();
 
-// IP کاربر
 fetch('https://api.ipify.org?format=json')
-  .then(response => response.json())
+  .then(res => res.json())
   .then(data => {
     document.getElementById('user-ip').textContent = `IP شما: ${data.ip}`;
   })
   .catch(() => {
     document.getElementById('user-ip').textContent = 'IP: در دسترس نیست';
   });
+
+// ۴. چشمک رمز عبور
+const togglePassword = document.querySelector('.toggle-password');
+const passwordInput = document.querySelector('#password');
+
+togglePassword.addEventListener('click', () => {
+  const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+  passwordInput.setAttribute('type', type);
+  togglePassword.textContent = type === 'password' ? '👁' : '🙈';
+});
