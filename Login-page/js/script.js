@@ -185,11 +185,11 @@
   };
 
   /* =================== ۴. Service Worker + Offline Mode =================== */
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js')
-      .then(reg => console.log('Service Worker registered', reg))
-      .catch(err => console.error('SW registration failed', err));
-  }
+  //if ('serviceWorker' in navigator) {
+  //  navigator.serviceWorker.register('/sw.js')
+    //  .then(reg => console.log('Service Worker registered', reg))
+      //.catch(err => console.error('SW registration failed', err));
+  //}
 
   // sw.js محتوای پیشنهادی (در فایل جدا):
   // self.addEventListener('install', e => {
