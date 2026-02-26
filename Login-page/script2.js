@@ -731,43 +731,60 @@ const MusicManager = {
     }
   },
 
-  async initWaveSurfer() {
-    if (typeof WaveSurfer === 'undefined') {
-      return console.error('WaveSurfer لود نشده');
-    }
+async initWaveSurfer() {
+  if (typeof WaveSurfer === 'undefined') {
+    return console.error('WaveSurfer اصلاً لود نشده! CDN چک شود.');
+  }
+  console.log('WaveSurfer پیدا شد، در حال ساخت...');
 
-    this.wavesurfer = WaveSurfer.create({
-      container: '#waveform',
-      waveColor: '#4f46e5',
-      progressColor: '#06b6d4',
-      cursorColor: '#ffffff88',
-      barWidth: 3,
-      barGap: 2,
-      height: 60,
-      normalize: true,
-      barRadius: 4
+  this.wavesurfer = WaveSurfer.create({
+    container: '#waveform',
+    waveColor: '#4f46e5',
+    progressColor: '#06b6d4',
+    cursorColor: '#ffffff88',
+    barWidth: 3,
+    barGap: 2,
+    height: 60,
+    normalize: true,
+    barRadius: 4
+  });
+  console.log('WaveSurfer ساخته شد');
+
+  try {
+    const url = CONFIG.music.url;
+    console.log('در حال لود آهنگ از:', url);
+    await this.wavesurfer.load(url);
+    console.log('آهنگ با موفقیت لود شد');
+
+    this.wavesurfer.on('ready', () => {
+      console.log('ready: مدت زمان:', this.wavesurfer.getDuration());
+      document.getElementById('duration').textContent = this.formatTime(this.wavesurfer.getDuration());
+      document.getElementById('trackTitle').textContent = 'باران عشق';
+      document.getElementById('trackArtist').textContent = 'ناصر چشم‌آذر';
+      this.updateMiniBar();
     });
 
-    try {
-      await this.wavesurfer.load(CONFIG.music.url);
-      this.wavesurfer.on('ready', () => {
-        document.getElementById('duration').textContent = this.formatTime(this.wavesurfer.getDuration());
-        document.getElementById('trackTitle').textContent = 'باران عشق'; // یا داینامیک
-        document.getElementById('trackArtist').textContent = 'ناصر چشم‌آذر';
-        this.updateMiniBar();
-      });
+    this.wavesurfer.on('audioprocess', () => {
+      document.getElementById('currentTime').textContent = this.formatTime(this.wavesurfer.getCurrentTime());
+    });
 
-      this.wavesurfer.on('audioprocess', () => {
-        document.getElementById('currentTime').textContent = this.formatTime(this.wavesurfer.getCurrentTime());
-      });
+    this.wavesurfer.on('play', () => {
+      console.log('پخش شروع شد');
+      this.updatePlayIcons(true);
+    });
+    this.wavesurfer.on('pause', () => {
+      console.log('توقف شد');
+      this.updatePlayIcons(false);
+    });
 
-      this.wavesurfer.on('play', () => this.updatePlayIcons(true));
-      this.wavesurfer.on('pause', () => this.updatePlayIcons(false));
-    } catch (err) {
-      console.error('خطا در لود آهنگ:', err);
-    }
-  },
-
+    this.wavesurfer.on('error', (err) => {
+      console.error('خطای WaveSurfer:', err);
+    });
+  } catch (err) {
+    console.error('خطا در لود آهنگ:', err.message || err);
+  }
+},
+   
   playPause() {
     if (this.wavesurfer) {
       this.wavesurfer.playPause();
