@@ -732,16 +732,6 @@ const MusicManager = {
       this.initWaveSurfer();
     }
   },
-   // پخش خودکار بعد از اولین کلیک روی صفحه
-  document.addEventListener('click', () => {
-    if (!this.wavesurfer) {
-      this.initWaveSurfer();
-    }
-    // فقط یک بار اجرا بشه
-  }, { once: true });
-
-  console.log('🎵 منتظر اولین کلیک کاربر برای پخش خودکار');
- },
 
 async initWaveSurfer() {
   // چک اولیه وجود WaveSurfer
@@ -976,3 +966,13 @@ async initWaveSurfer() {
         Bootstrapper.init();
     }
 })();
+   // پخش خودکار بعد از اولین کلیک روی صفحه
+  document.addEventListener('click', () => {
+    if (!this.wavesurfer) {
+      this.initWaveSurfer();
+    }
+    // فقط یک بار اجرا بشه
+  }, { once: true });
+
+  console.log('🎵 منتظر اولین کلیک کاربر برای پخش خودکار');
+ },
