@@ -181,57 +181,87 @@
     </main>
   </div>
 
-<!-- دکمه باز کردن پلیر (وقتی بسته است) -->
-<button id="musicToggleBtn" class="music-toggle-btn" title="باز کردن پلیر موسیقی" aria-label="باز کردن پلیر">
-  <i class="fas fa-music"></i>
+<!-- پلیر موزیک بهبودیافته - نسخه موبایل + دسکتاپ -->
+
+<!-- دکمه کوچک ثابت موبایل (همیشه可见 وقتی پلیر بسته است) -->
+<button id="mobile-mini-toggle" class="fixed bottom-5 right-5 z-[100] w-14 h-14 rounded-full bg-gradient-to-br from-cyan-600 to-blue-600 text-white flex items-center justify-center shadow-2xl md:hidden transition-all duration-300 hover:scale-110 active:scale-95" aria-label="باز کردن پلیر موزیک">
+  <i class="fas fa-music text-xl"></i>
 </button>
 
-<!-- پلیر موسیقی پیشرفته -->
-<div class="music-player-container" id="musicPlayerContainer">
-  <div class="music-info-side">
-    <div class="album-art-wrapper">
-      <img src="https://via.placeholder.com/80/333/fff?text=Cover" alt="کاور آلبوم" id="trackCover" class="album-art">
-      <div class="vinyl-hole"></div>
+<!-- کانتینر اصلی پلیر -->
+<div class="music-player fixed inset-x-0 bottom-0 z-50 transform transition-all duration-500 ease-out md:relative md:bottom-auto md:transform-none" id="musicPlayerContainer">
+  
+  <!-- مینی‌بار کوچک (فقط موبایل - وقتی پلیر بسته است) -->
+  <div class="mini-player-bar md:hidden flex items-center justify-between px-4 py-3 bg-gray-950/90 backdrop-blur-xl border-t border-cyan-900/50 shadow-2xl" id="miniPlayerBar">
+    <div class="flex items-center gap-3 flex-1 min-w-0">
+      <img id="miniCover" src="https://via.placeholder.com/44/111/eee?text=♪" alt="کاور" class="w-11 h-11 rounded-md object-cover shadow-md ring-1 ring-cyan-500/30">
+      <div class="min-w-0">
+        <h4 id="miniTitle" class="text-sm font-medium text-white truncate">نام آهنگ</h4>
+        <p id="miniArtist" class="text-xs text-gray-400 truncate">نام هنرمند</p>
+      </div>
     </div>
-    <div class="track-details">
-      <h4 id="trackTitle">نام آهنگ</h4>
-      <p id="trackArtist">نام خواننده / گروه</p>
-    </div>
-  </div>
-
-  <div class="player-center-section">
-    <div class="wave-header">
-      <span id="currentTime">00:00</span>
-      <div class="music-waveform" id="waveform"></div>
-      <span id="duration">00:00</span>
-    </div>
-  </div>
-
-  <div class="player-controls-group">
-    <button id="musicPlayPause" class="main-play-btn" aria-label="پخش / توقف">
-      <svg id="playBtnSvg" viewBox="0 0 24 24" width="32" height="32">
-        <path fill="currentColor" d="M8,5.14V19.14L19,12.14L8,5.14Z" id="playPath"></path>
-      </svg>
+    <button id="miniPlayPause" class="text-cyan-400 text-3xl p-2 hover:text-cyan-300 transition-colors" aria-label="پخش / توقف">
+      <i class="fas fa-play"></i>
     </button>
+  </div>
 
-    <div class="volume-module">
-      <button id="muteBtn" class="control-sub-btn" aria-label="صدا / بی‌صدا">
-        <svg viewBox="0 0 24 24" width="20" height="20" id="volumeIcon">
-          <path fill="currentColor" d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.07,19.86 21,16.28 21,12C21,7.72 18.07,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16.03C15.5,15.29 16.5,13.77 16.5,12M3,9V15H7L12,20V4L7,9H3Z"></path>
-        </svg>
+  <!-- پلیر کامل -->
+  <div class="full-player bg-gradient-to-b from-gray-950 to-black border-t border-cyan-800/50 backdrop-blur-xl p-4 md:p-6 shadow-2xl md:shadow-none md:border-0" id="fullPlayer">
+    <div class="flex justify-between items-center mb-4 md:mb-6">
+      <h3 class="text-lg font-semibold text-cyan-300">پخش‌کننده روشنــا</h3>
+      <button id="closeFullPlayer" class="text-gray-400 hover:text-white md:hidden text-2xl" aria-label="بستن پلیر">
+        <i class="fas fa-chevron-down"></i>
       </button>
-      <div class="volume-popover">
-        <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.7">
+    </div>
+
+    <!-- اطلاعات آهنگ -->
+    <div class="flex items-center gap-4 mb-5">
+      <div class="relative flex-shrink-0">
+        <img id="trackCover" src="https://via.placeholder.com/90/222/eee?text=Cover" alt="کاور آلبوم" class="w-24 h-24 md:w-28 md:h-28 rounded-xl object-cover shadow-2xl ring-2 ring-cyan-500/20">
+        <div class="absolute inset-0 m-auto w-5 h-5 bg-black rounded-full shadow-inner"></div>
+      </div>
+      <div class="min-w-0">
+        <h4 id="trackTitle" class="text-xl font-bold text-white truncate">نام آهنگ</h4>
+        <p id="trackArtist" class="text-base text-gray-300 truncate">نام خواننده / گروه</p>
       </div>
     </div>
 
-    <button id="musicClose" class="close-minimal" aria-label="بستن پلیر">
-      <svg viewBox="0 0 24 24" width="20" height="20">
-        <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"></path>
-      </svg>
-    </button>
+    <!-- waveform -->
+    <div class="wave-container mb-5">
+      <div class="flex items-center gap-3 text-sm text-gray-400">
+        <span id="currentTime">00:00</span>
+        <div id="waveform" class="flex-1 h-14 bg-gray-900/50 rounded-lg overflow-hidden"></div>
+        <span id="duration">00:00</span>
+      </div>
+    </div>
+
+    <!-- کنترل‌ها -->
+    <div class="flex justify-around items-center gap-6 text-3xl text-gray-300">
+      <button id="muteBtn" aria-label="صدا / بی‌صدا">
+        <i class="fas fa-volume-down"></i>
+      </button>
+      <button id="musicPlayPause" class="text-cyan-400 hover:text-cyan-300 transition-transform transform hover:scale-110" aria-label="پخش / توقف">
+        <svg id="playBtnSvg" viewBox="0 0 24 24" width="48" height="48">
+          <path fill="currentColor" d="M8,5.14V19.14L19,12.14L8,5.14Z" id="playPath"></path>
+        </svg>
+      </button>
+      <button id="musicClose" class="md:hidden text-gray-400 hover:text-white" aria-label="بستن">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- ولوم (مخفی در موبایل کوچک، در پلیر کامل نمایش داده می‌شود) -->
+    <div class="volume-control mt-4 hidden md:flex items-center gap-3">
+      <i class="fas fa-volume-down text-gray-400"></i>
+      <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.18" class="w-full accent-cyan-500">
+    </div>
   </div>
 </div>
+
+<!-- المان audio مخفی -->
+<audio id="audioElement" crossorigin="anonymous"></audio>
+
+
 
 
   <!-- کانتینر نوتیفیکیشن -->
