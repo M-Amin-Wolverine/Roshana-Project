@@ -35,7 +35,8 @@
         music: {
             url: 'https://dl.musicdel.ir/Music/1400/05/naser_chashmazar_barane_eshghe.mp3',
             volume: 0.18,
-            autoPlay: false
+            autoPlay: true
+            
         }
     };
     // =================== ابزارهای کمکی ===================
@@ -717,6 +718,7 @@ const MusicManager = {
     this.isInitialized = true;
     console.log('🎵 MusicManager موبایل-ریسپانسیو آماده شد');
   },
+   
 
   togglePlayerUI(open) {
     const container = document.getElementById('musicPlayerContainer');
@@ -730,6 +732,16 @@ const MusicManager = {
       this.initWaveSurfer();
     }
   },
+   // پخش خودکار بعد از اولین کلیک روی صفحه
+  document.addEventListener('click', () => {
+    if (!this.wavesurfer) {
+      this.initWaveSurfer();
+    }
+    // فقط یک بار اجرا بشه
+  }, { once: true });
+
+  console.log('🎵 منتظر اولین کلیک کاربر برای پخش خودکار');
+ },
 
 async initWaveSurfer() {
   // چک اولیه وجود WaveSurfer
@@ -944,6 +956,19 @@ async initWaveSurfer() {
             console.log('✅ Rooshan API available at window.Rooshan');
         }
     };
+   // پخش فوری و لوپ بدون نیاز به UI
+      document.addEventListener('DOMContentLoaded', () => {
+        const audio = new Audio(CONFIG.music.url);
+        audio.loop = true; // لوپ بی‌نهایت
+        audio.volume = CONFIG.music.volume;
+      
+        // پخش بعد از اولین تعامل
+        document.addEventListener('click', () => {
+          audio.play().catch(e => console.warn('پخش بلاک شد:', e));
+        }, { once: true });
+      
+        console.log('آهنگ در حالت ساده لوپ فعال شد');
+      });
     // =================== شروع برنامه ===================
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => Bootstrapper.init());
