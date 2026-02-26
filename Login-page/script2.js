@@ -713,7 +713,7 @@ const MusicManager = {
         if (this.wavesurfer) this.wavesurfer.setVolume(parseFloat(e.target.value));
       });
     }
-
+    this.initWaveSurfer();  // ← اضافه کن این خط
     this.isInitialized = true;
     console.log('🎵 MusicManager موبایل-ریسپانسیو آماده شد');
   },
@@ -732,56 +732,123 @@ const MusicManager = {
   },
 
 async initWaveSurfer() {
+  // چک اولیه وجود WaveSurfer
   if (typeof WaveSurfer === 'undefined') {
-    return console.error('WaveSurfer اصلاً لود نشده! CDN چک شود.');
+    console.error('WaveSurfer لود نشده است! لطفاً اسکریپت CDN را چک کنید.');
+    Utils.showNotification('خطا: کتابخانه WaveSurfer لود نشد', 'error');
+    return;
   }
-  console.log('WaveSurfer پیدا شد، در حال ساخت...');
 
-  this.wavesurfer = WaveSurfer.create({
-    container: '#waveform',
-    waveColor: '#4f46e5',
-    progressColor: '#06b6d4',
-    cursorColor: '#ffffff88',
-    barWidth: 3,
-    barGap: 2,
-    height: 60,
-    normalize: true,
-    barRadius: 4
-  });
-  console.log('WaveSurfer ساخته شد');
+  console.log('WaveSurfer موجود است → شروع ساختインスタンス');
 
   try {
-    const url = CONFIG.music.url;
-    console.log('در حال لود آهنگ از:', url);
-    await this.wavesurfer.load(url);
-    console.log('آهنگ با موفقیت لود شد');
+    // ایجادインスタンス WaveSurfer با تنظیمات بهبودیافته
+    this.wavesurfer = WaveSurfer.create({
+      container: '#waveform',
+      waveColor: '#64748b',           // رنگ موج خنثی‌تر
+      progressColor: '#06b6d4',       // رنگ پیشرفت (cyan)
+      cursorColor: '#ffffff88',
+      cursorWidth: 2,
+      barWidth: 3,
+      barGap: 2,
+      barRadius: 4,
+      height: 64,                     // کمی بلندتر برای زیبایی
+      normalize: true,
+      backend: 'WebAudio',            // صریحاً WebAudio استفاده کن
+      responsive: true,               // واکنش‌گرا به تغییر اندازه
+      hideScrollbar: true
+    });
 
+    console.log('WaveSurfer با موفقیت ساخته شد');
+
+    // گرفتن URL از CONFIG
+    const audioUrl = CONFIG.music.url;
+    if (!audioUrl) {
+      throw new Error('آدرس فایل صوتی در CONFIG.music.url تعریف نشده است');
+    }
+
+    console.log('در حال لود آهنگ از آدرس:', audioUrl);
+
+    // لود فایل صوتی
+    await this.wavesurfer.load(audioUrl);
+
+    console.log('فایل صوتی با موفقیت درخواست شد (در حال پردازش)');
+
+    // وقتی آهنگ کامل لود شد
     this.wavesurfer.on('ready', () => {
-      console.log('ready: مدت زمان:', this.wavesurfer.getDuration());
-      document.getElementById('duration').textContent = this.formatTime(this.wavesurfer.getDuration());
-      document.getElementById('trackTitle').textContent = 'باران عشق';
-      document.getElementById('trackArtist').textContent = 'ناصر چشم‌آذر';
+      console.log('آهنگ کاملاً آماده پخش است');
+      console.log('مدت زمان کل:', this.wavesurfer.getDuration(), 'ثانیه');
+
+      // آپدیت مدت زمان
+      const durationEl = document.getElementById('duration');
+      if (durationEl) {
+        durationEl.textContent = this.formatTime(this.wavesurfer.getDuration());
+      }
+
+      // آپدیت اطلاعات آهنگ (می‌تونی داینامیک کنی)
+      const trackInfo = {
+        title: 'باران عشق',
+        artist: 'ناصر چشم‌آذر',
+        cover: 'https://raw.githubusercontent.com/m-amin-wolverine/Roshana-Project/main/Login-page/cover.jpg' || 'https://placehold.co/90x90/222/eee/png?text=Cover'
+      };
+
+      const titleEl = document.getElementById('trackTitle');
+      const artistEl = document.getElementById('trackArtist');
+      const coverEl = document.getElementById('trackCover');
+      const miniCoverEl = document.getElementById('miniCover');
+
+      if (titleEl) titleEl.textContent = trackInfo.title;
+      if (artistEl) artistEl.textContent = trackInfo.artist;
+      if (coverEl) coverEl.src = trackInfo.cover;
+      if (miniCoverEl) miniCoverEl.src = trackInfo.cover;
+
       this.updateMiniBar();
+
+      // اگر autoPlay فعال باشد، پخش را شروع کن
+      if (CONFIG.music.autoPlay) {
+        console.log('autoPlay فعال است → شروع پخش خودکار');
+        this.wavesurfer.play().catch(err => {
+          console.warn('Auto-play توسط مرورگر بلاک شد:', err.message);
+          Utils.showNotification('پخش خودکار بلاک شد. لطفاً روی صفحه کلیک کنید.', 'warning');
+        });
+      }
     });
 
+    // آپدیت زمان فعلی در حین پخش
     this.wavesurfer.on('audioprocess', () => {
-      document.getElementById('currentTime').textContent = this.formatTime(this.wavesurfer.getCurrentTime());
+      const currentEl = document.getElementById('currentTime');
+      if (currentEl) {
+        currentEl.textContent = this.formatTime(this.wavesurfer.getCurrentTime());
+      }
     });
 
+    // مدیریت آیکون‌های play/pause
     this.wavesurfer.on('play', () => {
       console.log('پخش شروع شد');
       this.updatePlayIcons(true);
     });
+
     this.wavesurfer.on('pause', () => {
-      console.log('توقف شد');
+      console.log('پخش متوقف شد');
       this.updatePlayIcons(false);
     });
 
+    // مدیریت خطاهای لود و پخش
     this.wavesurfer.on('error', (err) => {
       console.error('خطای WaveSurfer:', err);
+      Utils.showNotification('خطا در لود یا پخش آهنگ: ' + (err.message || 'مشکل ناشناخته'), 'error');
     });
+
+    // وقتی پخش به انتها رسید
+    this.wavesurfer.on('finish', () => {
+      console.log('آهنگ به پایان رسید');
+      this.updatePlayIcons(false);
+      // اگر می‌خوای تکرار بشه یا آهنگ بعدی پخش بشه، اینجا کد بزن
+    });
+
   } catch (err) {
-    console.error('خطا در لود آهنگ:', err.message || err);
+    console.error('خطای کلی در راه‌اندازی WaveSurfer:', err.message || err);
+    Utils.showNotification('ناتوانی در راه‌اندازی پخش‌کننده موزیک', 'error');
   }
 },
    
