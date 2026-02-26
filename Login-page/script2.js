@@ -967,12 +967,13 @@ async initWaveSurfer() {
     }
 })();
    // پخش خودکار بعد از اولین کلیک روی صفحه
+ // پخش خودکار بعد از اولین کلیک روی صفحه (خارج از MusicManager)
+document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('click', () => {
-    if (!this.wavesurfer) {
-      this.initWaveSurfer();
+    if (Rooshan.music && !Rooshan.music.wavesurfer) {
+      Rooshan.music.initWaveSurfer();
     }
-    // فقط یک بار اجرا بشه
   }, { once: true });
 
-  console.log('🎵 منتظر اولین کلیک کاربر برای پخش خودکار');
- },
+  console.log('منتظر اولین کلیک برای پخش خودکار');
+});
