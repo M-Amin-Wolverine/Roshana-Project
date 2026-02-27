@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قوانین و حریم خصوصی - سامانه فرتاک</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --bg-body: linear-gradient(135deg, #0a1118 0%, #1a2634 100%);
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        body.light-mode {
+            --text: #1f2937;
+            --text-muted: #4b5563;
+            --bg-body: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            --bg-card: rgba(0, 0, 0, 0.05);
+            --border: rgba(0, 0, 0, 0.1);
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Vazirmatn', system-ui, sans-serif;
+            background: var(--bg-body);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.7;
+            transition: background 0.3s ease;
+        }
+
+        .privacy-container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            padding: 0.5rem;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 1rem;
+            margin-bottom: 2.5rem;
+            transition: color 0.25s ease;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+        }
+
+        .back-link svg {
+            transition: transform 0.25s ease;
+        }
+
+        .back-link:hover svg {
+            transform: translateX(-4px);
+        }
+
+        .privacy-header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+
+        .privacy-title {
+            font-size: clamp(2.2rem, 5vw, 3.2rem);
+            font-weight: 800;
+            background: linear-gradient(90deg, #c084fc, #a78bfa, #7dd3fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .last-updated {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            background: var(--bg-card);
+            padding: 0.6rem 1.2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .toc {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.8rem;
+            margin-bottom: 3rem;
+        }
+
+        .toc-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1.2rem;
+        }
+
+        .toc-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.8rem;
+        }
+
+        .toc-list a {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 0.7rem 1rem;
+            border-radius: 10px;
+            transition: all 0.25s ease;
+            display: block;
+        }
+
+        .toc-list a:hover {
+            color: var(--text);
+            background: rgba(79, 70, 229, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .privacy-section {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2.2rem;
+            margin-bottom: 2.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1.6rem;
+            padding-bottom: 0.7rem;
+            border-bottom: 3px solid rgba(79, 70, 229, 0.25);
+        }
+
+        .section-subtitle {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text);
+            margin: 1.8rem 0 1rem;
+        }
+
+        .section-text {
+            color: #cbd5e1;
+            margin-bottom: 1.2rem;
+            font-size: 1.05rem;
+        }
+
+        body.light-mode .section-text {
+            color: #4b5563;
+        }
+
+        .info-box {
+            background: rgba(79, 70, 229, 0.12);
+            border: 1px solid rgba(79, 70, 229, 0.35);
+            border-radius: 16px;
+            padding: 1.6rem;
+            margin: 1.8rem 0;
+        }
+
+        .info-title {
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+        }
+
+        .list {
+            list-style: none;
+            padding-right: 1.8rem;
+        }
+
+        .list li {
+            margin-bottom: 0.9rem;
+            position: relative;
+            padding-right: 1.5rem;
+        }
+
+        .list li::before {
+            content: '◆';
+            color: var(--primary);
+            position: absolute;
+            right: 0;
+            font-size: 0.9rem;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.8rem 0;
+            font-size: 0.95rem;
+        }
+
+        .table th {
+            background: rgba(79, 70, 229, 0.25);
+            color: var(--text);
+            font-weight: 600;
+            padding: 1rem;
+            text-align: right;
+        }
+
+        .table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            color: #cbd5e1;
+        }
+
+        body.light-mode .table td {
+            color: #4b5563;
+        }
+
+        .table tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        body.light-mode .table tr:hover td {
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        .highlight {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: var(--primary);
+            color: var(--text);
+            padding: 0.9rem 1.8rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 2rem auto;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+        }
+
+        footer {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 3rem 0 2rem;
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 768px) {
+            .privacy-container { padding: 1.8rem 1rem; }
+            .toc-list { grid-template-columns: 1fr; }
+            .privacy-title { font-size: 2rem; }
+            .section-title { font-size: 1.5rem; }
+            .theme-toggle { top: 0.5rem; left: 0.5rem; }
+        }
+
+        @media (min-width: 1024px) {
+            .privacy-container { max-width: 1100px; padding: 3rem 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+    </button>
+
+    <div class="privacy-container">
+
+        <a href="/" class="back-link">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            بازگشت به صفحه اصلی
+        </a>
+
+        <div class="privacy-header">
+            <h1 class="privacy-title">قوانین و حریم خصوصی</h1>
+            <div class="last-updated">آخرین به‌روزرسانی: <span id="current-date"></span> (نسخه ۲.۰)</div>
+        </div>
+
+        <div class="toc">
+            <h2 class="toc-title">فهرست مطالب</h2>
+            <ul class="toc-list">
+                <li><a href="#intro">مقدمه</a></li>
+                <li><a href="#legal-basis">پایه قانونی</a></li>
+                <li><a href="#data-collection">جمع‌آوری اطلاعات</a></li>
+                <li><a href="#sensitive-data">داده‌های شخصی حساس</a></li>
+                <li><a href="#data-usage">استفاده از اطلاعات</a></li>
+                <li><a href="#data-security">امنیت اطلاعات</a></li>
+                <li><a href="#cookies">کوکی‌ها و فناوری‌های مشابه</a></li>
+                <li><a href="#third-party">اشتراک‌گذاری با اشخاص ثالث</a></li>
+                <li><a href="#international-transfer">انتقال داده به خارج از کشور</a></li>
+                <li><a href="#ai-processing">استفاده از هوش مصنوعی</a></li>
+                <li><a href="#user-rights">حقوق کاربران</a></li>
+                <li><a href="#children">حریم خصوصی کودکان و نوجوانان</a></li>
+                <li><a href="#changes">تغییرات در سیاست حریم خصوصی</a></li>
+                <li><a href="#contact">تماس با ما</a></li>
+            </ul>
+        </div>
+
+        <section id="intro" class="privacy-section">
+            <h2 class="section-title">مقدمه</h2>
+            <p class="section-text">
+                سامانه یکپارچه فرتاک (و پروژه روشنا) متعلق به دانشگاه صدا و سیما، متعهد است که حریم خصوصی و امنیت اطلاعات شخصی کاربران را در بالاترین سطح ممکن حفظ کند. این سند سیاست‌های جمع‌آوری، استفاده، حفاظت و اشتراک‌گذاری اطلاعات شما را به‌طور شفاف توضیح می‌دهد. ما با رعایت کامل اصول شفافیت، مسئولیت‌پذیری و حداقل‌سازی داده‌ها عمل می‌کنیم تا اعتماد شما را حفظ کنیم.
+            </p>
+            <p class="section-text">
+                این سیاست جایگزین هر نسخه قبلی می‌شود و تنها نسخه معتبر آن به زبان فارسی است. ترجمه‌های احتمالی به زبان‌های دیگر صرفاً جنبه اطلاع‌رسانی دارند و معتبر نیستند.
+            </p>
+            <div class="info-box">
+                <h3 class="info-title">تعهد اصلی ما</h3>
+                <p class="section-text">
+                    تمامی فعالیت‌های پردازش داده در چارچوب قوانین جمهوری اسلامی ایران انجام می‌شود و ما مسئولیت کامل حفاظت از داده‌های شما را بر عهده داریم. در صورت هرگونه نقض، کاربران می‌توانند از حقوق قانونی خود استفاده کنند.
+                </p>
+            </div>
+        </section>
+
+        <section id="legal-basis" class="privacy-section">
+            <h2 class="section-title">پایه قانونی</h2>
+            <p class="section-text">
+                این سیاست حریم خصوصی کاملاً منطبق بر الزامات قانونی جمهوری اسلامی ایران است. پایه‌های قانونی اصلی شامل موارد زیر می‌باشند:
+            </p>
+            <ul class="list">
+                <li>قانون اساسی جمهوری اسلامی ایران (اصول ۲۲، ۲۳، ۲۵ و ۳۷) که حفاظت از حقوق شخصی، حریم خصوصی و ممنوعیت تفتیش عقاید را تضمین می‌کند.</li>
+                <li>قانون جرایم رایانه‌ای مصوب ۱۳۸۸ (مواد ۱ تا ۱۷) که دسترسی غیرمجاز به داده‌ها، نقض حریم خصوصی و جرایم مرتبط را جرم‌انگاری می‌کند.</li>
+                <li>قانون تجارت الکترونیکی مصوب ۱۳۸۲ (مواد ۵۸ تا ۶۶) که حفاظت از داده‌های شخصی در معاملات الکترونیکی را الزامی می‌داند.</li>
+                <li>دستورالعمل اجرایی بهبود حفاظت از حریم خصوصی کاربران در سامانه‌های فضای مجازی، مصوب شورای عالی فضای مجازی (ابلاغ‌شده در سال‌های اخیر).</li>
+                <li>در صورت تصویب نهایی، لایحه حمایت از داده‌های شخصی و حریم خصوصی (در حال بررسی در مجلس شورای اسلامی تا سال ۱۴۰۵).</li>
+            </ul>
+            <p class="section-text">
+                ما همچنین استانداردهای بین‌المللی مانند GDPR (به عنوان راهنما، نه الزام قانونی) را در نظر می‌گیریم تا سطح حفاظت را بالاتر ببریم، اما اولویت با قوانین داخلی است.
+            </p>
+        </section>
+
+        <section id="data-collection" class="privacy-section">
+            <h2 class="section-title">جمع‌آوری اطلاعات</h2>
+            <p class="section-text">
+                ما اطلاعات را تنها به میزان لازم و با رضایت شما جمع‌آوری می‌کنیم. این اطلاعات می‌تواند مستقیم (از طریق فرم‌های ثبت‌نام) یا غیرمستقیم (از طریق لاگ‌های سیستم) جمع شود. اهداف جمع‌آوری همیشه شفاف و محدود به خدمات آموزشی است.
+            </p>
+
+            <h3 class="section-subtitle">اطلاعات هویتی و کاربری</h3>
+            <ul class="list">
+                <li>نام و نام خانوادگی، برای شناسایی و ارتباطات رسمی.</li>
+                <li>کد ملی، برای احراز هویت قانونی و جلوگیری از تقلب.</li>
+                <li>شماره دانشجویی / پرسنلی، تاریخ تولد و جنسیت، برای مدیریت پروفایل تحصیلی.</li>
+                <li>شماره موبایل، ایمیل و آدرس، برای اطلاع‌رسانی و پشتیبانی.</li>
+            </ul>
+
+            <h3 class="section-subtitle">اطلاعات تحصیلی و حرفه‌ای</h3>
+            <ul class="list">
+                <li>رشته، مقطع، سال ورود و دانشکده، برای برنامه‌ریزی آموزشی.</li>
+                <li>گروه آموزشی، وضعیت تحصیلی/شغلی و سوابق آموزشی (مانند نمرات و گواهی‌ها).</li>
+                <li>سایر اطلاعات مرتبط مانند پروژه‌های پژوهشی یا فعالیت‌های فوق‌برنامه، اگر توسط کاربر ارائه شود.</li>
+            </ul>
+
+            <h3 class="section-subtitle">داده‌های فنی و رفتاری</h3>
+            <ul class="list">
+                <li>آدرس IP و موقعیت تقریبی جغرافیایی، برای امنیت و تحلیل آماری.</li>
+                <li>نوع دستگاه، مرورگر، سیستم‌عامل و زمان/مدت بازدید.</li>
+                <li>صفحات مشاهده‌شده و لاگ‌های امنیتی برای تشخیص فعالیت‌های مشکوک.</li>
+            </ul>
+            <p class="section-text">
+                ما هیچ‌گونه اطلاعات غیرضروری جمع نمی‌کنیم و کاربران می‌توانند در تنظیمات حساب خود، برخی جمع‌آوری‌ها را محدود کنند.
+            </p>
+        </section>
+
+        <section id="sensitive-data" class="privacy-section">
+            <h2 class="section-title">داده‌های شخصی حساس</h2>
+            <p class="section-text">
+                داده‌های حساس شامل اطلاعاتی است که می‌تواند به حقوق اساسی افراد آسیب بزند، مانند وضعیت سلامت جسمی یا روانی، عقاید سیاسی یا مذهبی، سوابق کیفری، اطلاعات ژنتیکی یا بیومتریک (مانند عکس چهره یا اثر انگشت در سیستم‌های احراز هویت پیشرفته).
+            </p>
+            <p class="section-text">
+                سامانه فرتاک این داده‌ها را تنها در موارد ضروری (مانند درخواست معافیت پزشکی برای واحدهای درسی یا تشخیص تقلب در آزمون‌های آنلاین) و با رضایت صریح کتبی یا الکترونیکی کاربر جمع‌آوری می‌کند. این داده‌ها با پروتکل‌های امنیتی بالاتر (رمزنگاری AES-256، دسترسی بسیار محدود و لاگ‌گیری دقیق) ذخیره می‌شوند و هرگز بدون مجوز قضایی یا رضایت کاربر افشا نمی‌گردند.
+            </p>
+            <p class="section-text">
+                اگر سامانه از فناوری‌های بیومتریک (مانند تشخیص چهره) استفاده کند، کاربران پیش از فعال‌سازی مطلع شده و می‌توانند آن را رد کنند. در حال حاضر، هیچ داده بیومتریک اجباری جمع‌آوری نمی‌شود.
+            </p>
+            <div class="info-box">
+                <h3 class="info-title">حفاظت ویژه</h3>
+                <p class="section-text">
+                    داده‌های حساس حداقل ۶ ماه پس از اتمام نیاز حذف می‌شوند و دسترسی به آنها تنها برای مدیران ارشد با مجوز ویژه امکان‌پذیر است.
+                </p>
+            </div>
+        </section>
+
+        <section id="data-usage" class="privacy-section">
+            <h2 class="section-title">استفاده از اطلاعات</h2>
+            <p class="section-text">
+                اطلاعات جمع‌آوری‌شده تنها برای اهداف آموزشی، اداری و بهبود خدمات استفاده می‌شود. ما هرگز اطلاعات را برای اهداف تجاری یا تبلیغاتی استفاده نمی‌کنیم. جدول زیر جزئیات دقیق‌تری ارائه می‌دهد:
+            </p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>نوع اطلاعات</th>
+                        <th>هدف اصلی</th>
+                        <th>مثال استفاده</th>
+                        <th>مدت نگهداری</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>اطلاعات هویتی</td><td>احراز هویت و ارائه خدمات شخصی</td><td>ورود به سیستم، صدور کارت دانشجویی</td><td>تا پایان عضویت + ۱ سال</td></tr>
+                    <tr><td>اطلاعات تحصیلی</td><td>مدیریت فرآیندهای آموزشی</td><td>انتخاب واحد، محاسبه معدل، صدور مدرک</td><td>تا ۷ سال پس از فارغ‌التحصیلی</td></tr>
+                    <tr><td>داده‌های فنی</td><td>بهبود عملکرد و امنیت</td><td>تحلیل ترافیک، تشخیص مشکلات فنی</td><td>حداکثر ۲۴ ماه</td></tr>
+                    <tr><td>لاگ‌های امنیتی</td><td>پیشگیری از حملات</td><td>بررسی ورودهای مشکوک</td><td>حداکثر ۱۲ ماه</td></tr>
+                    <tr><td>داده‌های حساس</td><td>پشتیبانی ویژه</td><td>پردازش درخواست‌های پزشکی</td><td>حداکثر ۶ ماه پس از نیاز</td></tr>
+                </tbody>
+            </table>
+            <p class="section-text">
+                پس از پایان مدت نگهداری، داده‌ها به‌طور امن حذف یا ناشناس‌سازی می‌شوند.
+            </p>
+        </section>
+
+        <section id="data-security" class="privacy-section">
+            <h2 class="section-title">امنیت اطلاعات</h2>
+            <p class="section-text">
+                امنیت داده‌ها اولویت اصلی ماست. ما از فناوری‌های پیشرفته برای حفاظت استفاده می‌کنیم و سیستم را به‌طور منظم ارزیابی می‌کنیم.
+            </p>
+            <ul class="list">
+                <li>ارتباط همیشه با پروتکل TLS 1.3 (HTTPS) برای جلوگیری از شنود.</li>
+                <li>رمزنگاری در حالت استراحت (AES-256) و در انتقال برای داده‌های حساس.</li>
+                <li>کنترل دسترسی مبتنی بر نقش (RBAC) با لاگ‌گیری دقیق تمام دسترسی‌ها.</li>
+                <li>سیستم‌های تشخیص نفوذ (IDS/IPS)، فایروال برنامه‌وب (WAF) و نظارت ۲۴/۷.</li>
+                <li>آزمون نفوذ دوره‌ای توسط کارشناسان مستقل و به‌روزرسانی‌های امنیتی منظم.</li>
+            </ul>
+            <div class="info-box">
+                <h3 class="info-title">توصیه‌های شما برای امنیت بیشتر</h3>
+                <p class="section-text">
+                    • از رمز عبور حداقل ۱۲ کاراکتری با ترکیب حروف، اعداد و نماد استفاده کنید.<br>• احراز هویت دومرحله‌ای (2FA) را فعال کنید.<br>• از VPN معتبر در شبکه‌های عمومی استفاده نمایید.<br>• فعالیت‌های حساب خود را به‌طور منظم بررسی کنید و هرگونه فعالیت مشکوک را گزارش دهید.
+                </p>
+            </div>
+        </section>
+
+        <section id="cookies" class="privacy-section">
+            <h2 class="section-title">کوکی‌ها و فناوری‌های مشابه</h2>
+            <p class="section-text">
+                کوکی‌ها فایل‌های کوچک متنی هستند که برای بهبود تجربه کاربری استفاده می‌شوند. ما از کوکی‌ها و فناوری‌های ذخیره‌سازی محلی (مانند localStorage) برای موارد زیر بهره می‌بریم:
+            </p>
+            <ul class="list">
+                <li>حفظ وضعیت ورود (session) برای جلوگیری از ورود مکرر.</li>
+                <li>ذخیره تنظیمات کاربری و ترجیحات، مانند زبان یا تم نمایش.</li>
+                <li>تحلیل ناشناس رفتار کاربران برای بهبود رابط کاربری.</li>
+                <li>تشخیص فعالیت‌های مشکوک برای امنیت.</li>
+            </ul>
+            <p class="section-text">
+                شما می‌توانید کوکی‌ها را در تنظیمات مرورگر خود مدیریت، غیرفعال یا حذف کنید، اما این کار ممکن است برخی قابلیت‌ها مانند ورود خودکار را محدود کند. ما از کوکی‌های تبلیغاتی یا ردیابی سوم‌شخص استفاده نمی‌کنیم.
+            </p>
+        </section>
+
+        <section id="third-party" class="privacy-section">
+            <h2 class="section-title">اشتراک‌گذاری با اشخاص ثالث</h2>
+            <p class="section-text">
+                ما اطلاعات شما را با احتیاط کامل به اشتراک می‌گذاریم و تنها در موارد ضروری. اشتراک‌گذاری همیشه با رعایت محرمانگی و قوانین انجام می‌شود.
+            </p>
+            <ul class="list">
+                <li>با نهادهای آموزشی و پژوهشی زیرمجموعه دانشگاه صدا و سیما، برای هماهنگی خدمات.</li>
+                <li>با ارائه‌دهندگان خدمات ابری و میزبانی داخلی مورد تأیید (مانند شرکت‌های ایرانی معتبر)، فقط برای ذخیره‌سازی و پشتیبان‌گیری.</li>
+                <li>در صورت الزام قانونی، حکم قضایی یا درخواست رسمی مراجع ذی‌صلاح مانند پلیس فتا یا دادگستری.</li>
+                <li>با کارشناسان امنیتی مستقل برای آزمون نفوذ، بدون دسترسی به داده‌های هویتی.</li>
+            </ul>
+            <div class="info-box">
+                <h3 class="info-title">تعهد صریح</h3>
+                <p class="section-text">
+                    ما هیچ‌گونه اطلاعات هویتی شما را به شرکت‌های تبلیغاتی، شبکه‌های اجتماعی، یا هر نهاد تجاری خارجی نمی‌فروشیم، اجاره نمی‌دهیم یا واگذار نمی‌کنیم. اشتراک‌گذاری همیشه محدود به حداقل داده لازم است.
+                </p>
+            </div>
+        </section>
+
+        <section id="international-transfer" class="privacy-section">
+            <h2 class="section-title">انتقال داده به خارج از کشور</h2>
+            <p class="section-text">
+                با توجه به الزامات قانونی جمهوری اسلامی ایران، داده‌های کاربران ایرانی به هیچ کشوری خارج از قلمرو ایران منتقل نمی‌شود، مگر در موارد استثنایی با مجوز صریح قانونی از مراجع مربوطه (مانند شورای عالی فضای مجازی) یا رضایت کتبی کاربر.
+            </p>
+            <p class="section-text">
+                تمامی سرورها و زیرساخت‌های سامانه فرتاک در داخل کشور میزبانی می‌شوند و از ارائه‌دهندگان خارجی استفاده نمی‌شود تا ریسک‌های امنیتی و قانونی به حداقل برسد. در صورت هرگونه تغییر در این سیاست، کاربران از طریق ایمیل مطلع خواهند شد.
+            </p>
+        </section>
+
+        <section id="ai-processing" class="privacy-section">
+            <h2 class="section-title">استفاده از هوش مصنوعی</h2>
+            <p class="section-text">
+                سامانه فرتاک از فناوری‌های هوش مصنوعی برای بهبود خدمات آموزشی استفاده می‌کند. این پردازش‌ها همیشه شفاف و با رضایت کاربر انجام می‌شود.
+            </p>
+            <ul class="list">
+                <li>عمدتاً بر روی داده‌های ناشناس یا pseudonymized (ناشناس‌سازی‌شده) انجام می‌شود تا حریم خصوصی حفظ شود.</li>
+                <li>با رضایت صریح کاربر در موارد حساس (مانند تحلیل عملکرد تحصیلی) فعال می‌گردد.</li>
+                <li>هرگز برای تصمیم‌گیری‌های کاملاً خودکار که حقوق اساسی شما را محدود کند (مانند رد درخواست فارغ‌التحصیلی بدون بررسی انسانی)، استفاده نمی‌شود.</li>
+                <li>مدل‌های AI داخلی یا مورد تأیید استفاده می‌شوند و داده‌ها برای آموزش مدل‌های خارجی ارسال نمی‌گردند.</li>
+            </ul>
+            <p class="section-text">
+                کاربران می‌توانند در تنظیمات حساب، پردازش‌های AI را غیرفعال کنند و درخواست توضیح الگوریتم را بدهند.
+            </p>
+        </section>
+
+        <section id="user-rights" class="privacy-section">
+            <h2 class="section-title">حقوق کاربران</h2>
+            <p class="section-text">
+                شما به عنوان کاربر، حقوق گسترده‌ای در خصوص داده‌های خود دارید. این حقوق بر اساس قوانین ایران و استانداردهای بین‌المللی تضمین می‌شود:
+            </p>
+            <ul class="list">
+                <li>دسترسی و دریافت نسخه‌ای از اطلاعات شخصی خود (حق دسترسی).</li>
+                <li>درخواست اصلاح اطلاعات نادرست یا ناقص (حق تصحیح).</li>
+                <li>درخواست حذف اطلاعات (حق فراموشی، در چارچوب قوانین و الزامات دانشگاه).</li>
+                <li>دریافت توضیح درباره نحوه پردازش داده‌ها و اهداف آن.</li>
+                <li>اعتراض به پردازش و درخواست محدودیت آن در موارد خاص (مانند بررسی قضایی).</li>
+                <li>حق portability: دریافت داده‌ها در فرمت ساخت‌یافته و قابل انتقال به سیستم دیگر.</li>
+                <li>اعتراض به پردازش‌های مبتنی بر هوش مصنوعی یا پروفایلینگ خودکار.</li>
+            </ul>
+            <p class="section-text">
+                برای اعمال حقوق فوق، از طریق ایمیل یا فرم پشتیبانی اقدام کنید. ما به تمامی درخواست‌های معتبر حداکثر ظرف ۳۰ روز تقویمی پاسخ خواهیم داد (مگر در موارد پیچیده قانونی که ممکن است تا ۹۰ روز طول بکشد). اگر درخواست رد شود، دلایل آن را به‌طور مکتوب توضیح می‌دهیم.
+            </p>
+        </section>
+
+        <section id="children" class="privacy-section">
+            <h2 class="section-title">حریم خصوصی کودکان و نوجوانان</h2>
+            <p class="section-text">
+                سامانه فرتاک برای کاربران زیر ۱۸ سال (کودکان و نوجوانان) حساسیت ویژه‌ای قائل است. افراد زیر سن قانونی تنها با رضایت صریح والدین یا سرپرست قانونی می‌توانند ثبت‌نام کنند و از خدمات استفاده نمایند.
+            </p>
+            <p class="section-text">
+                ما آگاهانه اطلاعات افراد زیر سن قانونی را بدون تأیید جمع‌آوری نمی‌کنیم. در صورت کشف حساب بدون رضایت، آن را مسدود کرده و داده‌ها را حذف می‌کنیم. والدین می‌توانند درخواست بررسی حساب فرزند خود را بدهند.
+            </p>
+        </section>
+
+        <section id="changes" class="privacy-section">
+            <h2 class="section-title">تغییرات در سیاست حریم خصوصی</h2>
+            <p class="section-text">
+                این سیاست ممکن است به‌روزرسانی شود تا با تغییرات قانونی، فناوری یا خدمات همخوانی داشته باشد. در صورت ایجاد تغییرات اساسی (مانند تغییر در نحوه اشتراک‌گذاری داده‌ها)، نسخه جدید در این صفحه منتشر شده و تاریخ به‌روزرسانی تغییر خواهد کرد.
+            </p>
+            <p class="section-text">
+                همچنین، در موارد مهم، از طریق ایمیل، اعلان درون‌سامانه یا پیامک به شما اطلاع‌رسانی می‌شود. ادامه استفاده از سامانه پس از تغییرات، به معنای پذیرش سیاست جدید است.
+            </p>
+        </section>
+
+        <section id="contact" class="privacy-section">
+            <h2 class="section-title">تماس با ما</h2>
+            <p class="section-text">
+                برای هرگونه سؤال، درخواست دسترسی، اعمال حقوق یا شکایت در خصوص حریم خصوصی، از راه‌های زیر استفاده کنید:
+            </p>
+            <div style="margin-top: 1.6rem; font-size: 1.05rem;">
+                <p><span class="highlight">ایمیل:</span> privacy@feratak.ir یا privacy@iribu.ac.ir</p>
+                <p><span class="highlight">تلفن:</span> ۰۲۱–۲۲۱۶۸۵۴۰ (ساعات اداری: ۸ صبح تا ۴ عصر)</p>
+                <p><span class="highlight">آدرس:</span> تهران – دانشگاه صدا و سیما – واحد حفاظت از داده‌ها و حریم خصوصی</p>
+            </div>
+            <p class="section-text">
+                در صورت عدم رضایت از پاسخ ما، می‌توانید شکایت خود را به <strong>دفتر حفاظت از داده‌های دانشگاه صدا و سیما</strong>، <strong>پلیس فتا (سایبر پلیس)</strong> یا <strong>دادگستری مربوطه</strong> ارجاع دهید.
+            </p>
+        </section>
+
+        <div style="text-align:center; margin: 4rem 0 2rem;">
+            <a href="/assets/privacy-policy.pdf" class="download-btn" download>دانلود نسخه PDF سیاست حریم خصوصی</a>
+        </div>
+
+    </div>
+
+    <footer>
+        © ۱۴۰۴–۱۴۰۵ دانشگاه صدا و سیما – سامانه یکپارچه فرتاک<br>
+        تمامی حقوق محفوظ است.
+    </footer>
+
+    <script>
+        // تاریخ به‌روزرسانی پویا
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('fa-IR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        // Smooth scroll برای لینک‌های TOC
+        document.querySelectorAll('.toc-list a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                document.querySelector(targetId).scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            });
+        });
+
+        // Dark/Light mode toggle
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        }
+
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-mode');
+        }
+    </script>
+
+</body>
+</html>
